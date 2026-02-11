@@ -81,7 +81,7 @@ namespace ngay_3_toi_uu
             int recordLimit = Convert.ToInt32(Console.ReadLine()); 
             var processor = new LogProcessor();
 
-            // 2. Day 3: Async I/O - Load 10^6 records vào RAM để Benchmark CPU
+            // 2. Async I/O - Load 10^6 records vào RAM để Benchmark CPU
             Console.WriteLine($"--- Đang load {recordLimit:N0} records (Async I/O) ---");
             Stopwatch sw = Stopwatch.StartNew();
             var records = await processor.LoadRecordsAsync(filePath, recordLimit);
@@ -101,7 +101,7 @@ namespace ngay_3_toi_uu
             foreach (var item in seqTop)
                 Console.WriteLine($"- {item.Key}: {item.Value}");
 
-            // 4. Day 3: Benchmark PLINQ (Song song)
+            // 4. Benchmark PLINQ (Song song)
             Console.WriteLine("\n--- Đang xử lý SONG SONG (PLINQ) ---");
             sw.Restart();
             var plinqResults = processor.ProcessPLINQ(records);
