@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utilities\AnalyzeLog.cs" />
     <Compile Include="Utilities\GenerateLogFile.cs" />
     <Compile Include="Engines\ParallelWordsCounter.cs" />
     <Compile Include="Program.cs" />

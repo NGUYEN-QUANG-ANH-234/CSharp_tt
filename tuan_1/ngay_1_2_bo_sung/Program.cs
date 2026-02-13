@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Diagnostics;
 
 using ngay_1_2_bo_sung.Engines;
-using ngay_1_2_bo_sung.Utilites;
+using ngay_1_2_bo_sung.Utilities;
 
 namespace ngay_1_2_bo_sung
 {
@@ -57,7 +56,7 @@ namespace ngay_1_2_bo_sung
             var seqResults = sequential.GetTopWords(numberOfTopWords);
             
             sw.Stop();
-            PrintResults(seqResults, sw.ElapsedMilliseconds, sequential.GetTotalWordsCount());
+            AnalyzeLog.PrintResults(seqResults, sw.ElapsedMilliseconds, sequential.GetTotalWordsCount());
 
             // --- XỬ LÝ SONG SONG (LOCAL STATE) ---
             Console.WriteLine("\n--- Đang xử lý SONG SONG ---");
@@ -67,15 +66,8 @@ namespace ngay_1_2_bo_sung
             var parResults = parallel.GetTopWords(numberOfTopWords);
             
             sw.Stop();
-            PrintResults(parResults, sw.ElapsedMilliseconds, parallel.GetTotalWordsCount());
+            AnalyzeLog.PrintResults(parResults, sw.ElapsedMilliseconds, parallel.GetTotalWordsCount());
 
-        }
-
-        static void PrintResults(IDictionary<string, long> data, long time, long totalWords)
-        {
-            foreach (var item in data) Console.WriteLine($"- {item.Key}: {item.Value}");
-            Console.WriteLine($"=> Tổng số từ đã đọc: {totalWords:N0}"); // Định dạng N0 để có dấu phân cách hàng nghìn
-            Console.WriteLine($"=> Thời gian: {time} ms");
         }
     }
 }

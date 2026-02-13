@@ -2,16 +2,14 @@
 using System.IO;
 using System.Text;
 
-namespace ngay_1_2_bo_sung.Utilites
+namespace ngay_1_2_bo_sung.Utilities
 {
     public class GenerateLogFile
     {
         private const long _OneMbInBytes = 1024 * 1024;
-        // Ham tao log file gia lap
-        public static void GenerateDummyLogFile(string path, long targetSize)
-        {
-            string[] samples =
-            {
+
+        private static string[] _samples =
+                {
                 // INFO
                 "INFO: User logged in successfully",
                 "INFO: User logged out",
@@ -55,27 +53,40 @@ namespace ngay_1_2_bo_sung.Utilites
                 "SYSTEM: Health check failed"
             };
 
-            Random rand = new Random();
-            long currentSize = 0; // Khoi tao bien theo doi Size cua file tao
-
-            using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
+        // Ham tao log file gia lap
+        public static void GenerateDummyLogFile(string filePath, long sizeInMb)
+        {
+            try
             {
-                while (currentSize < targetSize)
+                Random rand = new Random();
+                long targetSize = sizeInMb; // Khoi tao bien muc tieu tao file gia
+                long currentSize = 0; // Khoi tao bien theo doi Size cua file tao
+
+
+                using (StreamWriter sw = new StreamWriter(filePath, false, Encoding.UTF8))
                 {
-                    string line = $"{samples[rand.Next(0, samples.Length)]} at {DateTime.Now}";
-                    sw.WriteLine(line);
+                    while (currentSize < targetSize)
+                    {
+                        string line = $"{_samples[rand.Next(0, _samples.Length)]} at {DateTime.Now}";
+                        sw.WriteLine(line);
 
-                    // Lay size hien tai cong voi size cua dong code (theo Byte) va size cua ky tu xuong dong
-                    currentSize += Encoding.UTF8.GetByteCount(line) + Environment.NewLine.Length;
+                        // Lay size hien tai cong voi size cua dong code (theo Byte) va size cua ky tu xuong dong
+                        currentSize += Encoding.UTF8.GetByteCount(line) + Environment.NewLine.Length;
 
-                    if (currentSize % (100 * _OneMbInBytes) < 500)
-                        Console.WriteLine($"File đã tạo được {currentSize / (_OneMbInBytes)} / {targetSize / (_OneMbInBytes)}  MB");
+                        if (currentSize % (100 * _OneMbInBytes) < 500)
+                            Console.WriteLine($"File đã tạo được {currentSize / (_OneMbInBytes)} / {targetSize / (_OneMbInBytes)}  MB");
+                    }
+                    ;
+
                 }
-                ;
-
+                Console.WriteLine($"Đã hoàn thành tạo file {currentSize / (_OneMbInBytes)} MB");
             }
-            Console.WriteLine($"Đã hoàn thành tạo file {currentSize / (_OneMbInBytes)} MB");
-        }
 
+            catch (FileNotFoundException ex) { Console.WriteLine($"[ERROR] File không tìm thấy: {filePath}. Chi tiết: {ex.Message}"); }
+            catch (UnauthorizedAccessException ex) { Console.WriteLine($"[ERROR] Không có quyền truy cập file. Vui lòng kiểm tra quyền Admin. Detail: {ex.Message}"); }
+            catch (IOException ex) { Console.WriteLine($"[ERROR] File đang bị khóa hoặc lỗi phần cứng đĩa. Detail: {ex.Message}"); }
+            catch (Exception ex) { Console.WriteLine($"[FATAL] Lỗi hệ thống không xác định: {ex.Message}"); }
+
+        }
     }
 }
