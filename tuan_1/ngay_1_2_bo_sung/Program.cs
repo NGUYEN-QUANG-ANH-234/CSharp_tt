@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Linq.Expressions;
 
-using ngay_3_toi_uu.Core;
-using ngay_3_toi_uu.Engines;
-using ngay_3_toi_uu.Utilities;
+using ngay_1_2_bo_sung.Engines;
+using ngay_1_2_bo_sung.Utilites;
 
-namespace ngay_3_toi_uu
-    
+namespace ngay_1_2_bo_sung
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
 
@@ -50,54 +44,31 @@ namespace ngay_3_toi_uu
                 GenerateLogFile.GenerateDummyLogFile(filePath, targetSizeBytes);
             }
 
-            Console.WriteLine("Nhập số dòng trong Records muốn xử lý: ");
-            var inputLimit = Console.ReadLine();
-            const int MaxLimit = 2_000_000_000;
-
-            if (!int.TryParse(inputLimit, out int lineLimit) || lineLimit <= 0 || lineLimit >= MaxLimit)
-            {
-                Console.WriteLine($"Lỗi: Vui lòng nhập số nguyên dương từ 1 đến {MaxLimit:N0}.");
-                return;
-            }
-
-            int recordLimit = lineLimit;
-
-
-            var processor = new LoadRecords();
-
-            // 2. Async I/O - Load 10^6 records vào RAM để Benchmark CPU
-            Console.WriteLine($"--- Đang load {recordLimit:N0} records (Async I/O) ---");
-            Stopwatch sw = Stopwatch.StartNew();
-            var records = await processor.LoadRecordsAsync(filePath, recordLimit);
-            sw.Stop();
-            Console.WriteLine($"Load hoàn tất: {sw.ElapsedMilliseconds} ms\n");        
-
             Console.Write("Nhập số lượng Top words: ");
             if (!int.TryParse(Console.ReadLine(), out int numberOfTopWords)) return;
 
-            sw.Stop();  
+            Stopwatch sw = new Stopwatch();
 
-            sw.Restart();
-
-            //// 3. Benchmark Tuần tự
+            // --- XỬ LÝ TUẦN TỰ ---
             Console.WriteLine("\n--- Đang xử lý TUẦN TỰ ---");
             var sequential = new SequentialWordsCounter();
             sw.Restart();
-            sequential.Execute(records);
+            sequential.Execute(File.ReadLines(filePath)); 
             var seqResults = sequential.GetTopWords(numberOfTopWords);
-
+            
             sw.Stop();
             PrintResults(seqResults, sw.ElapsedMilliseconds, sequential.GetTotalWordsCount());
 
-            //// 4. Benchmark PLINQ (Song song)
+            // --- XỬ LÝ SONG SONG (LOCAL STATE) ---
             Console.WriteLine("\n--- Đang xử lý SONG SONG ---");
             var parallel = new ParallelWordsCounter();
             sw.Restart();
-            parallel.Execute(records);
+            parallel.Execute(File.ReadLines(filePath));
             var parResults = parallel.GetTopWords(numberOfTopWords);
-
+            
             sw.Stop();
             PrintResults(parResults, sw.ElapsedMilliseconds, parallel.GetTotalWordsCount());
+
         }
 
         static void PrintResults(IDictionary<string, long> data, long time, long totalWords)
