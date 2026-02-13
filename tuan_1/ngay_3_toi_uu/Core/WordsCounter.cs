@@ -18,7 +18,12 @@ namespace ngay_3_toi_uu.Core
             // Lấy kết quả từ phương thức abstract của lớp con
             var results = GetResult();
 
-            if (results == null || numberOfTopWord <= 0) return new Dictionary<string, long>();
+            if (results == null || numberOfTopWord <= 0) 
+            {
+                if (results == null) Console.WriteLine("[WARN] GetTopWords: Dữ liệu nguồn rỗng.");
+                else Console.WriteLine($"[INFO] GetTopWords: Số lượng yêu cầu {numberOfTopWord} không hợp lệ.");
+                return new Dictionary<string, long>(); 
+            }
 
             // Áp dụng PLINQ để tối ưu tốc độ sắp xếp
             return results
@@ -30,12 +35,16 @@ namespace ngay_3_toi_uu.Core
         }
 
         public long GetTotalWordsCount()
+        {
+            var results = GetResult();
+            if (results == null)
             {
-                var results = GetResult();
-                if (results == null) return 0;
-
-                // Cộng dồn tất cả Value trong Dictionary
-                return results.Values.Sum();
+                Console.WriteLine("[DEBUG] GetTotalWordsCount: Dữ liệu nguồn null, không thể tính tổng.");
+                return 0; 
             }
+
+            // Cộng dồn tất cả Value trong Dictionary
+            return results.Values.Sum();
+        }
     }
 }

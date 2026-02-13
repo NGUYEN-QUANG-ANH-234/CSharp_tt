@@ -44,9 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\WordsCounter.cs" />
-    <Compile Include="Engines\ParallelWordsCounter.cs" />
-    <Compile Include="Engines\SequentialWordsCounter.cs" />
-    <Compile Include="Utilities\LoadRecords.cs" />
+    <Compile Include="RecordsLoaders\SyncLoadRecords.cs" />
+    <Compile Include="Utilities\AnalyzeLog.cs" />
+    <Compile Include="WordsCounters\ParallelWordsCounter.cs" />
+    <Compile Include="WordsCounters\SequentialWordsCounter.cs" />
+    <Compile Include="RecordsLoaders\AsyncLoadRecords.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\GenerateLogFile.cs" />

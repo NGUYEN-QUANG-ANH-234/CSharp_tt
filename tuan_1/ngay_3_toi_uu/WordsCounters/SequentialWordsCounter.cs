@@ -1,9 +1,10 @@
 ﻿using ngay_3_toi_uu.Core;
 using ngay_3_toi_uu.Utilities;
+
 using System;
 using System.Collections.Generic;
 
-namespace ngay_3_toi_uu.Engines
+namespace ngay_3_toi_uu.WordCounters
 {
     public class SequentialWordsCounter : WordsCounter
     {
@@ -11,12 +12,16 @@ namespace ngay_3_toi_uu.Engines
 
         public override void Execute(IEnumerable<string> lines)
         {
-            // Kiểm tra đầu vào (Guard Clause)
-            if (lines == null) return;
+            if (lines == null)
+            {
+                Console.WriteLine("[WARN] Execute: Danh sách dòng đầu vào (lines) tại xử lý tuần tự bị null.");
+                return;
+            }
+                    
 
             foreach (var line in lines)
             {
-                string[] words = WordsUtility.Extractor(line);
+                string[] words = WordsUtility.WordsExtract(line);
 
                 foreach (var word in words)
                 {

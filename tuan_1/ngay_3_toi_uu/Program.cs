@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using ngay_3_toi_uu.RecordsLoaders;
+using ngay_3_toi_uu.WordCounters;
+using ngay_3_toi_uu.Utilities;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Linq.Expressions;
-
-using ngay_3_toi_uu.Core;
-using ngay_3_toi_uu.Engines;
-using ngay_3_toi_uu.Utilities;
 
 namespace ngay_3_toi_uu
     
@@ -54,7 +51,7 @@ namespace ngay_3_toi_uu
             var inputLimit = Console.ReadLine();
             const int MaxLimit = 2_000_000_000;
 
-            if (!int.TryParse(inputLimit, out int lineLimit) || lineLimit <= 0 || lineLimit >= MaxLimit)
+            if (!int.TryParse(inputLimit, out int lineLimit) || lineLimit <= 0 || lineLimit > MaxLimit)
             {
                 Console.WriteLine($"Lỗi: Vui lòng nhập số nguyên dương từ 1 đến {MaxLimit:N0}.");
                 return;
@@ -62,15 +59,24 @@ namespace ngay_3_toi_uu
 
             int recordLimit = lineLimit;
 
-
-            var processor = new LoadRecords();
-
-            // 2. Async I/O - Load 10^6 records vào RAM để Benchmark CPU
-            Console.WriteLine($"--- Đang load {recordLimit:N0} records (Async I/O) ---");
+            // 2. Sync I/O 
+            Console.WriteLine($"--- Đang load {recordLimit:N0} records (Sync I/O) ---");
             Stopwatch sw = Stopwatch.StartNew();
-            var records = await processor.LoadRecordsAsync(filePath, recordLimit);
+
+            var syncProcessor = new SyncLoadRecords();
+            var syncRecords = syncProcessor.LoadRecords(filePath, recordLimit);
             sw.Stop();
-            Console.WriteLine($"Load hoàn tất: {sw.ElapsedMilliseconds} ms\n");        
+            Console.WriteLine($"Load Sync hoàn tất: {sw.ElapsedMilliseconds} ms\n");
+
+            sw.Restart();
+
+            // 3. Async I/O 
+            Console.WriteLine($"--- Đang load {recordLimit:N0} records (Async I/O) ---");
+
+            var asyncProcessor = new AsyncLoadRecords();
+            var asyncRecords = await asyncProcessor.LoadRecords(filePath, recordLimit);
+            sw.Stop();
+            Console.WriteLine($"Load Async hoàn tất: {sw.ElapsedMilliseconds} ms\n");        
 
             Console.Write("Nhập số lượng Top words: ");
             if (!int.TryParse(Console.ReadLine(), out int numberOfTopWords)) return;
@@ -79,32 +85,27 @@ namespace ngay_3_toi_uu
 
             sw.Restart();
 
-            //// 3. Benchmark Tuần tự
+            // 4. Benchmark Tuần tự
             Console.WriteLine("\n--- Đang xử lý TUẦN TỰ ---");
             var sequential = new SequentialWordsCounter();
             sw.Restart();
-            sequential.Execute(records);
+            sequential.Execute(asyncRecords);
             var seqResults = sequential.GetTopWords(numberOfTopWords);
 
             sw.Stop();
-            PrintResults(seqResults, sw.ElapsedMilliseconds, sequential.GetTotalWordsCount());
+            AnalyzeLog.PrintResults(seqResults, sw.ElapsedMilliseconds, sequential.GetTotalWordsCount());
 
-            //// 4. Benchmark PLINQ (Song song)
+            // 5. Benchmark PLINQ (Song song)
             Console.WriteLine("\n--- Đang xử lý SONG SONG ---");
             var parallel = new ParallelWordsCounter();
             sw.Restart();
-            parallel.Execute(records);
+            parallel.Execute(asyncRecords);
             var parResults = parallel.GetTopWords(numberOfTopWords);
 
             sw.Stop();
-            PrintResults(parResults, sw.ElapsedMilliseconds, parallel.GetTotalWordsCount());
+            AnalyzeLog.PrintResults(parResults, sw.ElapsedMilliseconds, parallel.GetTotalWordsCount());
         }
 
-        static void PrintResults(IDictionary<string, long> data, long time, long totalWords)
-        {
-            foreach (var item in data) Console.WriteLine($"- {item.Key}: {item.Value}");
-            Console.WriteLine($"=> Tổng số từ đã đọc: {totalWords:N0}"); // Định dạng N0 để có dấu phân cách hàng nghìn
-            Console.WriteLine($"=> Thời gian: {time} ms");
-        }
+
     }
 }

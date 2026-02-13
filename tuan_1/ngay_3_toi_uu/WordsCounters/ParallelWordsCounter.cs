@@ -1,12 +1,12 @@
 ﻿using ngay_3_toi_uu.Core;
 using ngay_3_toi_uu.Utilities;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace ngay_3_toi_uu
+namespace ngay_3_toi_uu.WordCounters
 {
     public class ParallelWordsCounter : WordsCounter
     {
@@ -14,12 +14,19 @@ namespace ngay_3_toi_uu
 
         public override void Execute(IEnumerable<string> lines)
         {
+            if (lines == null)
+            {
+                Console.WriteLine("[WARN] Execute: Danh sách dòng đầu vào (lines) tại xử lý song song bị null.");
+                return;
+            } 
+
+
             Parallel.ForEach<string, Dictionary<string, long>>(
                 lines,
                 () => new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase), // Khởi tạo từ điển cục bộ cho mỗi luồng
                 (line, loopState, localDict) =>
                 {
-                    var words = WordsUtility.Extractor(line);
+                    var words = WordsUtility.WordsExtract(line);
                     foreach (var word in words)
                     {
                         if (localDict.ContainsKey(word)) localDict[word]++;
