@@ -12,62 +12,55 @@ namespace ngay_1_2_bo_sung
     {
         static void Main(string[] args)
         {
+            // --- CẤU HÌNH HỆ THỐNG ---
             Console.OutputEncoding = Encoding.UTF8;
+            const int MaxQuantityWord = 100;
+            const long MaxFileSizeMb = 51_200;
 
+            // --- NHẬP LIỆU VÀ KHỞI TẠO FILE ---
             string baseDir = AppContext.BaseDirectory;
             string filePath = Path.Combine(baseDir, "DummyLogFile.txt");
 
             Console.Write("Nhập dung lượng file (MB): ");
-            string input = Console.ReadLine();
+            var sizeInMb = InputHelper.GetValidLong($"Vui lòng nhập số dòng (1 - {MaxFileSizeMb:N0}): ", 1, MaxFileSizeMb);
 
-            // Sử dụng TryParse để kiểm tra logic mà không ném Exception (Hiệu năng cao)
-            if (!long.TryParse(input, out long sizeInMb) || sizeInMb <= 0)
-            {
-                // Guard Clause: Xử lý sai lệch sớm
-                Console.WriteLine("Lỗi: Vui lòng nhập một số nguyên dương hợp lệ.");
-                return;
-            }
-
-            // Sau khi đã an toàn, mới thực hiện dịch bit
             long targetSizeBytes = sizeInMb << 20;
 
-
             FileInfo file = new FileInfo(filePath);
-            if (file.Exists && file.Length > (targetSizeBytes))
+            if (!file.Exists || file.Length < targetSizeBytes)
             {
-                Console.WriteLine($"Da ton tai File xap xi ({sizeInMb} MB). Bo qua buoc tao file.");
-            }
-            else
-            {
-                Console.WriteLine("File chua co hoac bi rong. Bat dau tao file moi...");
-                GenerateLogFile.GenerateDummyLogFile(filePath, targetSizeBytes);
+                Console.WriteLine("[ERROR] File chưa tồn tại. Bắt đầu tạo file mới...");
+                GenerateLogFile.Generate(filePath, targetSizeBytes);
             }
 
-            Console.Write("Nhập số lượng Top words: ");
-            if (!int.TryParse(Console.ReadLine(), out int numberOfTopWords)) return;
+            Console.WriteLine($"[OK] Đã tồn tại file xấp xỉ ({sizeInMb} MB), bỏ qua bước tạo file.");
+
+            // --- CẤU HÌNH THÔNG SỐ XỬ LÝ ---
+            var wordQuantity = InputHelper.GetValidInt($"Nhập số lượng từ xuất hiện nhiều nhất (1 - {MaxQuantityWord:N0}): ", 1, MaxQuantityWord);
+            Console.WriteLine($"[OK] Hệ thống sẽ xử lý {wordQuantity:N0} từ.");
 
             Stopwatch sw = new Stopwatch();
 
-            // --- XỬ LÝ TUẦN TỰ ---
+            // --- ĐẾM TỪ ---
+            // Xử lý tuần tự
             Console.WriteLine("\n--- Đang xử lý TUẦN TỰ ---");
             var sequential = new SequentialWordsCounter();
             sw.Restart();
             sequential.Execute(File.ReadLines(filePath)); 
-            var seqResults = sequential.GetTopWords(numberOfTopWords);
+            var seqResults = sequential.GetTopWords(wordQuantity);
             
             sw.Stop();
             AnalyzeLog.PrintResults(seqResults, sw.ElapsedMilliseconds, sequential.GetTotalWordsCount());
 
-            // --- XỬ LÝ SONG SONG (LOCAL STATE) ---
+            // Xử lý song song
             Console.WriteLine("\n--- Đang xử lý SONG SONG ---");
             var parallel = new ParallelWordsCounter();
             sw.Restart();
             parallel.Execute(File.ReadLines(filePath));
-            var parResults = parallel.GetTopWords(numberOfTopWords);
+            var parResults = parallel.GetTopWords(wordQuantity);
             
             sw.Stop();
             AnalyzeLog.PrintResults(parResults, sw.ElapsedMilliseconds, parallel.GetTotalWordsCount());
-
-        }
+                    }
     }
 }
