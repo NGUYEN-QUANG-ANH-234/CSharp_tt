@@ -1,20 +1,29 @@
 ﻿using System;
+using System.Text;
 
 namespace ngay_3_toi_uu.Utilities
 {
-    internal class WordsUtility
+    public class WordsUtility
     {
-        private static readonly char[] _separators = { ' ', '.', ',', ':', ';', '\t', '(', ')', '{', '}', '-', '_', '+', '=' };
-
-        public static string[] WordsExtract(string line)
+        public static string[] Extract(string line)
         {
-            if (string.IsNullOrWhiteSpace(line))
+            if (string.IsNullOrWhiteSpace(line)) return Array.Empty<string>();
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (char c in line)
             {
-                Console.WriteLine();
-                return Array.Empty<string>();
+                if (char.IsLetter(c))
+                {
+                    sb.Append(c);
+                }
+                else if (char.IsWhiteSpace(c))
+                {
+                    sb.Append(' ');
+                }
             }
 
-            return line.Split(_separators, StringSplitOptions.RemoveEmptyEntries);
+            return sb.ToString().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

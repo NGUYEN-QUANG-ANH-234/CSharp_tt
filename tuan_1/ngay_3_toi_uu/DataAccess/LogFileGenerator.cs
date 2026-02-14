@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text;
 
-namespace ngay_3_toi_uu.Utilities
+namespace ngay_3_toi_uu.DataAccess
 {
-    public class GenerateLogFile
+    public class LogFileGenerator
     {
         private const long _OneMbInBytes = 1024 * 1024;
 
@@ -73,18 +73,18 @@ namespace ngay_3_toi_uu.Utilities
                         currentSize += Encoding.UTF8.GetByteCount(line) + Environment.NewLine.Length;
 
                         if (currentSize % (100 * _OneMbInBytes) < 500)
-                            Console.WriteLine($"[OK] File đã tạo được {currentSize / (_OneMbInBytes)} / {targetSize / (_OneMbInBytes)}  MB");
+                            Console.WriteLine($"File đã tạo được {currentSize / (_OneMbInBytes)} / {targetSize / (_OneMbInBytes)}  MB");
                     }
                     ;
 
                 }
-                Console.WriteLine($"[OK] Đã hoàn thành tạo file {currentSize / (_OneMbInBytes)} MB");
+                Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [INFO] Đã hoàn thành tạo file {currentSize / (_OneMbInBytes)} MB");
             }
 
-            catch (FileNotFoundException ex) { Console.WriteLine($"[ERROR] File không tìm thấy: {filePath}. Chi tiết: {ex.Message}"); }
-            catch (UnauthorizedAccessException ex) { Console.WriteLine($"[ERROR] Không có quyền truy cập file. Vui lòng kiểm tra quyền Admin. Detail: {ex.Message}"); }
-            catch (IOException ex) { Console.WriteLine($"[ERROR] File đang bị khóa hoặc lỗi phần cứng đĩa. Detail: {ex.Message}"); }
-            catch (Exception ex) { Console.WriteLine($"[FATAL] Lỗi hệ thống không xác định: {ex.Message}"); }
+            catch (FileNotFoundException ex) { Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [FATAL] [LogFileGenerator] [Generate] File không tìm thấy: {filePath}, chi tiết: {ex.Message}"); Environment.Exit(1); }
+            catch (UnauthorizedAccessException ex) { Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [FATAL] [LogFileGenerator] [Generate] Không có quyền truy cập file. Vui lòng kiểm tra quyền Adminchi tiết: {ex.Message}"); Environment.Exit(1); }
+            catch (IOException ex) { Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [FATAL] [LogFileGenerator] [Generate] File đang bị khóa hoặc lỗi phần cứng đĩachi tiết: {ex.Message}"); Environment.Exit(1); }
+            catch (Exception ex) { Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [FATAL] [LogFileGenerator] [Generate] Lỗi hệ thống không xác định, chi tiết: {ex.Message}"); Environment.Exit(1); }
 
         }
     }

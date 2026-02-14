@@ -4,7 +4,7 @@ using ngay_3_toi_uu.Utilities;
 using System;
 using System.Collections.Generic;
 
-namespace ngay_3_toi_uu.WordCounters
+namespace ngay_3_toi_uu.Engines
 {
     public class SequentialWordsCounter : WordsCounter
     {
@@ -14,14 +14,14 @@ namespace ngay_3_toi_uu.WordCounters
         {
             if (lines == null)
             {
-                Console.WriteLine("[WARN] Execute: Danh sách dòng đầu vào (lines) tại xử lý tuần tự bị null.");
+                Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [SequentialWordsCounter] [Execute] Danh sách dòng đầu vào (lines) tại xử lý TUẦN TỰ bị null.");
                 return;
             }
-                    
+
 
             foreach (var line in lines)
             {
-                string[] words = WordsUtility.WordsExtract(line);
+                string[] words = WordsUtility.Extract(line);
 
                 foreach (var word in words)
                 {

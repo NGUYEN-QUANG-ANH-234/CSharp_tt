@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ngay_3_toi_uu.WordCounters
+namespace ngay_3_toi_uu.Engines
 {
     public class ParallelWordsCounter : WordsCounter
     {
@@ -16,7 +16,7 @@ namespace ngay_3_toi_uu.WordCounters
         {
             if (lines == null)
             {
-                Console.WriteLine("[WARN] Execute: Danh sách dòng đầu vào (lines) tại xử lý SONG SONG bị null.");
+                Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [ParallelWordsCounter] [Execute] Danh sách dòng đầu vào (lines) tại xử lý SONG SONG bị null.");
                 return;
             } 
 
@@ -26,7 +26,7 @@ namespace ngay_3_toi_uu.WordCounters
                 () => new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase), // Khởi tạo từ điển cục bộ cho mỗi luồng
                 (line, loopState, localDict) =>
                 {
-                    var words = WordsUtility.WordsExtract(line);
+                    var words = WordsUtility.Extract(line);
                     foreach (var word in words)
                     {
                         if (localDict.ContainsKey(word)) localDict[word]++;

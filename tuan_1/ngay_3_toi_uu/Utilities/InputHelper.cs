@@ -13,13 +13,13 @@ namespace ngay_3_toi_uu.Utilities
 
                 if (!int.TryParse(input, out int result))
                 {
-                    Console.WriteLine("[ERROR] Lỗi: Vui lòng nhập một số nguyên hợp lệ.");
+                    Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [InputHelper] [GetValidInt] Nhập sai số nguyên hợp lệ.");
                     continue;
                 }
 
                 if (result < min || result > max)
                 {
-                    Console.WriteLine($"[ERROR] Lỗi: Số phải nằm trong khoảng {min:N0} đến {max:N0}.");
+                    Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [InputHelper] [GetValidInt] Nhập số nằm ngoài khoảng {min:N0} đến {max:N0}.");
                     continue;
                 }
 
@@ -36,14 +36,14 @@ namespace ngay_3_toi_uu.Utilities
 
                 if (!long.TryParse(input, out long result))
                 {
-                    Console.WriteLine("[ERROR] Lỗi: Vui lòng nhập một số nguyên hợp lệ.");
+                    Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [InputHelper] [GetValidLong] Nhập sai số nguyên hợp lệ.");
                     continue;
                 }
 
                 if (result < min || result > max)
                 {
                     // Sử dụng :N0 để hiển thị số như 1,000,000 thay vì 1000000
-                    Console.WriteLine($"[ERROR] Lỗi: Số phải nằm trong khoảng {min:N0} đến {max:N0}.");
+                    Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [InputHelper] [GetValidLong] Nhập số nằm ngoài khoảng {min:N0} đến {max:N0}.");
                     continue;
                 }
 
