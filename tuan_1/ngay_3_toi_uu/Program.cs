@@ -1,6 +1,7 @@
 ﻿using ngay_3_toi_uu.DataAccess;
 using ngay_3_toi_uu.Engines;
 using ngay_3_toi_uu.Utilities;
+using ngay_3_toi_uu.Core;
 
 using System;
 using System.IO;
@@ -68,7 +69,7 @@ namespace ngay_3_toi_uu
             // --- ĐẾM TỪ ---
             // Xử lý tuần tự
             Console.WriteLine("\n--- Đang xử lý TUẦN TỰ ---");
-            var sequential = new SequentialWordsCounter();
+            WordsCounter sequential = new SequentialWordsCounter();
             sw.Restart();
             sequential.Execute(asyncRecords);
             var seqResults = sequential.GetWords(wordQuantity);
@@ -78,7 +79,7 @@ namespace ngay_3_toi_uu
 
             // Xử lý song song
             Console.WriteLine("\n--- Đang xử lý SONG SONG ---");
-            var parallel = new ParallelWordsCounter();
+            WordsCounter parallel = new ParallelWordsCounter();
             sw.Restart();
             parallel.Execute(asyncRecords);
             var parResults = parallel.GetWords(wordQuantity);

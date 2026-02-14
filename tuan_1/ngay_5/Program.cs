@@ -1,6 +1,7 @@
 ﻿using ngay_5.DataAccess;
 using ngay_5.Utilities;
 using ngay_5.Engines;
+using ngay_5.Core;
 
 using System;
 using System.Diagnostics;
@@ -70,7 +71,7 @@ namespace ngay_5
             // --- ĐẾM TỪ ---
             // Xử lý tuần tự
             Console.WriteLine("\n--- Đang xử lý TUẦN TỰ ---");
-            var sequential = new SequentialWordsCounter();
+            WordsCounter sequential = new SequentialWordsCounter();
             sw.Restart();
             sequential.Execute(asyncRecords);
             var seqResults = sequential.GetWords(wordQuantity);
@@ -80,7 +81,7 @@ namespace ngay_5
 
             // Xử lý song song
             Console.WriteLine("\n--- Đang xử lý SONG SONG ---");
-            var parallel = new ParallelWordsCounter();
+            WordsCounter parallel = new ParallelWordsCounter();
             sw.Restart();
             parallel.Execute(asyncRecords);
             var parResults = parallel.GetWords(wordQuantity);

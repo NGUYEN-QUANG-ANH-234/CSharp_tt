@@ -5,8 +5,6 @@ using System.Linq;
 
 namespace ngay_5.Core
 {
-
-
     public abstract class WordsCounter
     {
 
