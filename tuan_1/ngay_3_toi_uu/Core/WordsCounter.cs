@@ -25,7 +25,6 @@ namespace ngay_3_toi_uu.Core
                 return new Dictionary<string, long>(); 
             }
 
-            // Áp dụng PLINQ để tối ưu tốc độ sắp xếp
             return results
                 .AsParallel()
                 .WithDegreeOfParallelism(Environment.ProcessorCount)

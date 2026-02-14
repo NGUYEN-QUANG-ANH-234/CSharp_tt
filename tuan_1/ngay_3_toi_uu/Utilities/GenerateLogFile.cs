@@ -54,13 +54,13 @@ namespace ngay_3_toi_uu.Utilities
             };
 
         // Ham tao log file gia lap
-        public static void GenerateDummyLogFile(string filePath, long sizeInMb)
+        public static void Generate(string filePath, long sizeInMb)
         {
             try
             {
                 Random rand = new Random();
-                long targetSize = sizeInMb; // Khoi tao bien muc tieu tao file gia
-                long currentSize = 0; // Khoi tao bien theo doi Size cua file tao
+                long targetSize = sizeInMb; 
+                long currentSize = 0; 
 
 
                 using (StreamWriter sw = new StreamWriter(filePath, false, Encoding.UTF8))
@@ -70,16 +70,15 @@ namespace ngay_3_toi_uu.Utilities
                         string line = $"{_samples[rand.Next(0, _samples.Length)]} at {DateTime.Now}";
                         sw.WriteLine(line);
 
-                        // Lay size hien tai cong voi size cua dong code (theo Byte) va size cua ky tu xuong dong
                         currentSize += Encoding.UTF8.GetByteCount(line) + Environment.NewLine.Length;
 
                         if (currentSize % (100 * _OneMbInBytes) < 500)
-                            Console.WriteLine($"File đã tạo được {currentSize / (_OneMbInBytes)} / {targetSize / (_OneMbInBytes)}  MB");
+                            Console.WriteLine($"[OK] File đã tạo được {currentSize / (_OneMbInBytes)} / {targetSize / (_OneMbInBytes)}  MB");
                     }
                     ;
 
                 }
-                Console.WriteLine($"Đã hoàn thành tạo file {currentSize / (_OneMbInBytes)} MB");
+                Console.WriteLine($"[OK] Đã hoàn thành tạo file {currentSize / (_OneMbInBytes)} MB");
             }
 
             catch (FileNotFoundException ex) { Console.WriteLine($"[ERROR] File không tìm thấy: {filePath}. Chi tiết: {ex.Message}"); }

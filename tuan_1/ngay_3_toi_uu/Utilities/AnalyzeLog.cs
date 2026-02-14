@@ -20,7 +20,7 @@ namespace ngay_3_toi_uu.Utilities
                 double percentage = (double)item.Value / totalWords * 100;
                 Console.WriteLine($"- {item.Key,-10}: {item.Value,10:N0} bản ghi (chiếm {percentage:N2} %)");
             }
-            Console.WriteLine($"=> Tổng số từ đã đọc: {totalWords:N0}"); // Định dạng N0 để có dấu phân cách hàng nghìn
+            Console.WriteLine($"=> Tổng số từ đã đọc: {totalWords:N0}"); 
             Console.WriteLine($"=> Thời gian: {time} ms");
         }
 

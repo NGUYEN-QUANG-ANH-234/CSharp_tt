@@ -16,7 +16,7 @@ namespace ngay_3_toi_uu.WordCounters
         {
             if (lines == null)
             {
-                Console.WriteLine("[WARN] Execute: Danh sách dòng đầu vào (lines) tại xử lý song song bị null.");
+                Console.WriteLine("[WARN] Execute: Danh sách dòng đầu vào (lines) tại xử lý SONG SONG bị null.");
                 return;
             } 
 

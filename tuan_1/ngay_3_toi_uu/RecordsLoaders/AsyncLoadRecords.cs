@@ -7,7 +7,6 @@ namespace ngay_3_toi_uu.RecordsLoaders
 {
     public class AsyncLoadRecords
     {
-        // Async I/O - Đọc file bất đồng bộ
         public async Task<List<string>> LoadRecords(string filePath, int limit)
         {
             var records = new List<string>(limit);
