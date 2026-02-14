@@ -72,12 +72,12 @@ namespace ngay_1_2_bo_sung.Utilities
                         currentSize += Encoding.UTF8.GetByteCount(line) + Environment.NewLine.Length;
 
                         if (currentSize % (100 * _OneMbInBytes) < 500)
-                            Console.WriteLine($"[PROGRESS] File đã tạo được {currentSize / (_OneMbInBytes)} / {targetSize / (_OneMbInBytes)}  MB");
+                            Console.WriteLine($"[INFO] File đã tạo được {currentSize / (_OneMbInBytes)} / {targetSize / (_OneMbInBytes)}  MB");
                     }
                     ;
 
                 }
-                Console.WriteLine($"[OK] Đã hoàn thành tạo file {currentSize / (_OneMbInBytes)} MB");
+                Console.WriteLine($"[INFO] Đã hoàn thành tạo file {currentSize / (_OneMbInBytes)} MB");
             }
 
             catch (FileNotFoundException ex) { Console.WriteLine($"[ERROR] File không tìm thấy: {filePath}. Chi tiết: {ex.Message}"); }

@@ -17,7 +17,7 @@ namespace ngay_1_2_bo_sung
             const int MaxQuantityWord = 100;
             const long MaxFileSizeMb = 51_200;
 
-            // --- NHẬP LIỆU VÀ KHỞI TẠO FILE ---
+            // --- KHỞI TẠO FILE ---
             string baseDir = AppContext.BaseDirectory;
             string filePath = Path.Combine(baseDir, "DummyLogFile.txt");
 

@@ -18,7 +18,7 @@ namespace ngay_1_2_bo_sung.Engines
 
             foreach (var line in lines)
             {
-                string[] words = WordsUtility.Extractor(line);
+                string[] words = WordsUtility.Extract(line);
 
                 foreach (var word in words)
                 {

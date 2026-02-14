@@ -20,7 +20,7 @@ namespace ngay_1_2_bo_sung
                 () => new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase), // Khởi tạo từ điển cục bộ cho mỗi luồng
                 (line, loopState, localDict) =>
                 {
-                    var words = WordsUtility.Extractor(line);
+                    var words = WordsUtility.Extract(line);
                     foreach (var word in words)
                     {
                         if (localDict.ContainsKey(word)) localDict[word]++;
