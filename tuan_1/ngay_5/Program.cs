@@ -17,7 +17,7 @@ namespace ngay_5
         static async Task Main(string[] args)
         {
             LoggingConfigurator.SetupSeriLog();
-            using var factory = new LoggerFactory();
+            using var factory = LoggingConfigurator.CreateFactory();
             var logger = factory.CreateLogger<Program>();
 
             try
