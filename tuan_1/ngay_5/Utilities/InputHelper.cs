@@ -1,25 +1,29 @@
-﻿using System;
+﻿using Serilog;
+using Microsoft.Extensions.Logging;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ngay_5.Utilities
 {
     public static class InputHelper
     {
-        public static int GetValidInt(string prompt, int min, int max)
+        public static int GetValidInt(ILogger logger, string prompt, int min, int max)
         {
             while (true)
             {
                 Console.Write(prompt);
-                string input = Console.ReadLine();
+                string? input = Console.ReadLine();
 
                 if (!int.TryParse(input, out int result))
                 {
-                    Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [InputHelper] [GetValidInt] Nhập sai số nguyên hợp lệ.");
+                    logger.LogWarning("Nhập không hợp lệ số nguyên (Kiểu Int).");
                     continue;
                 }
 
                 if (result < min || result > max)
                 {
-                    Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [InputHelper] [GetValidInt] Nhập số nằm ngoài khoảng {min:N0} đến {max:N0}.");
+                    // Sử dụng :N0 để hiển thị số như 1,000,000 thay vì 1000000
+                    logger.LogWarning("Nhập số nằm ngoài khoảng {Min:N0} đến {Max:N0}.", min, max);
                     continue;
                 }
 
@@ -27,23 +31,22 @@ namespace ngay_5.Utilities
             }
         }
 
-        public static long GetValidLong(string prompt, long min, long max)
+        public static long GetValidLong(ILogger logger, string prompt, long min, long max)
         {
             while (true)
             {
                 Console.Write(prompt);
-                string input = Console.ReadLine();
+                string? input = Console.ReadLine();
 
                 if (!long.TryParse(input, out long result))
                 {
-                    Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [InputHelper] [GetValidLong] Nhập sai số nguyên hợp lệ.");
+                    logger.LogWarning("Nhập không hợp lệ số nguyên (Kiểu Long).");
                     continue;
                 }
 
                 if (result < min || result > max)
                 {
-                    // Sử dụng :N0 để hiển thị số như 1,000,000 thay vì 1000000
-                    Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [InputHelper] [GetValidLong] Nhập số nằm ngoài khoảng {min:N0} đến {max:N0}.");
+                    logger.LogWarning("Nhập số nằm ngoài khoảng {Min:N0} đến {Max:N0}.", min, max);
                     continue;
                 }
 

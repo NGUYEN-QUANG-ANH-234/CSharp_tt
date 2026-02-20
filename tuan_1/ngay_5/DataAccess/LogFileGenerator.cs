@@ -1,6 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using Serilog;
+using Microsoft.Extensions.Logging;
 using System.Text;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ngay_5.DataAccess
 {
@@ -54,7 +56,7 @@ namespace ngay_5.DataAccess
             };
 
         // Ham tao log file gia lap
-        public static void Generate(string filePath, long sizeInMb)
+        public static void Generate(ILogger logger, string filePath, long sizeInMb)
         {
             try
             {
@@ -81,10 +83,26 @@ namespace ngay_5.DataAccess
                 Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [INFO] Đã hoàn thành tạo file {currentSize / (_OneMbInBytes)} MB");
             }
 
-            catch (FileNotFoundException ex) { Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [FATAL] [LogFileGenerator] [Generate] File không tìm thấy: {filePath}, chi tiết: {ex.Message}"); Environment.Exit(1); }
-            catch (UnauthorizedAccessException ex) { Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [FATAL] [LogFileGenerator] [Generate] Không có quyền truy cập file. Vui lòng kiểm tra quyền Admin, chi tiết: {ex.Message}"); Environment.Exit(1); }
-            catch (IOException ex) { Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [FATAL] [LogFileGenerator] [Generate] File đang bị khóa hoặc lỗi phần cứng đĩa, chi tiết: {ex.Message}"); Environment.Exit(1); }
-            catch (Exception ex) { Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [FATAL] [LogFileGenerator] [Generate] Lỗi hệ thống không xác định, chi tiết: {ex.Message}"); Environment.Exit(1); }
+            catch (FileNotFoundException ex)
+            {
+                logger.LogCritical(ex, "File không tìm thấy tại đường dẫn: {FilePath}", filePath);
+                throw; 
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                logger.LogCritical(ex, "Không có quyền truy cập file. Hãy thử chạy với quyền Admin.");
+                throw;
+            }
+            catch (IOException ex)
+            {
+                logger.LogCritical(ex, "Lỗi I/O: File đang bị khóa hoặc lỗi phần cứng đĩa.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logger.LogCritical(ex, "Lỗi hệ thống không xác định xảy ra trong quá trình Load dữ liệu.");
+                throw;
+            }
 
         }
     }

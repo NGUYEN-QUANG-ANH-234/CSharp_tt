@@ -1,8 +1,10 @@
 ﻿using ngay_5.Core;
 using ngay_5.Utilities;
 
-using System;
-using System.Collections.Generic;
+using Serilog;
+using Microsoft.Extensions.Logging;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ngay_5.Engines
 {
@@ -10,12 +12,11 @@ namespace ngay_5.Engines
     {
         private readonly Dictionary<string, long> _words = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
 
-        public override void Execute(IEnumerable<string> lines)
+        public override void Execute(ILogger logger, IEnumerable<string> lines)
         {
             if (lines == null)
             {
-                Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [SequentialWordsCounter] [Execute] Danh sách dòng đầu vào (lines) tại xử lý TUẦN TỰ bị null.");
-                return;
+                logger.LogError("Danh sách dòng đầu vào (lines) tại xử lý TUẦN TỰ bị null.");
             }
 
 

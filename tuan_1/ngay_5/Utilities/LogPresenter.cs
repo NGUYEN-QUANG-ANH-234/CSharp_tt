@@ -1,21 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Serilog;
+using Microsoft.Extensions.Logging;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ngay_5.Utilities
 {
     public static class LogPresenter
     {
-        public static void PrintResults(IDictionary<string, long> data, long time, long totalWords)
+        public static void PrintResults(ILogger logger, IDictionary<string, long> data, long time, long totalWords)
         {
             if (data == null || data.Count == 0 || totalWords <= 0)
             {
-                if (data == null) Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [LogAnalyzer] [PrintResults] Dữ liệu (Dictionary) bị null.");
-                else if (totalWords <= 0) Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [ERROR] [LogAnalyzer] [PrintResults] Không có từ nào được tìm thấy để tính tỷ lệ.");
-                else Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [INFO] [LogAnalyzer] [PrintResults] Danh sách kết quả trống.");
-                return;
+                if (data == null)
+                {
+                    logger.LogError("Dữ liệu(Dictionary) bị null.");
+                    throw new InvalidOperationException("File không có nội dung.");
+                }
+                else if (totalWords <= 0)
+                {
+                    logger.LogError(" Không có từ nào được tìm thấy để tính tỷ lệ.");
+                    throw new InvalidOperationException("Không tìm thấy từ để tính tỉ lệ");
+                }
+                else
+                {
+                    logger.LogError("Danh sách kết quả trống.");
+                    throw new InvalidOperationException("Danh sách kết quả rỗng");
+                }
             }
 
-            Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] [INFO] [LogAnalyzer] [PrintResults] Dữ liệu (Dictionary) được đọc.");
+            logger.LogInformation("Dữ liệu (Dictionary) được đọc.");
             foreach (var item in data)
             {
                 double percentage = (double)item.Value / totalWords * 100;

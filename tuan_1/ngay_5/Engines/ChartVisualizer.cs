@@ -1,12 +1,13 @@
-﻿using ScottPlot;
-using System;
-using System.IO;
+﻿using Serilog;
+using Microsoft.Extensions.Logging;
+
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ngay_5.Engines
 {
     public static class ChartVisualizer
     {
-        public static void Export(long syncMs, long asyncMs, long seqMs, long parMs, int lines)
+        public static void Export(ILogger logger, long syncMs, long asyncMs, long seqMs, long parMs, int lines)
         {
             try
             {
@@ -48,11 +49,12 @@ namespace ngay_5.Engines
                 plt2.YLabel("Thời gian (ms)");
                 plt2.SavePng(Path.Combine(path, "cpu.png"), 600, 400);
 
-                Console.WriteLine($"\n[INFO] Đã xuất biểu đồ màu tại: {path}");
+                logger.LogInformation("Đã xuất biểu đồ màu tại: {Path}", path);
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[{DateTime.Now:yyyy:MMM:dd HH:mm:ss}] [ERROR] [ChartVisualizer] [Export] Lỗi xuất biểu đồ: " + ex.Message);
+                logger.LogError(ex, "Lỗi xuất biểu đồ: {Message}", ex.Message);
             }
         }
     }
