@@ -22,7 +22,7 @@ namespace ngay_5.Engines
 
             foreach (var line in lines)
             {
-                string[] words = WordsUtility.Extract(line);
+                string[] words = WordsUtility.Extract(logger, line);
 
                 foreach (var word in words)
                 {

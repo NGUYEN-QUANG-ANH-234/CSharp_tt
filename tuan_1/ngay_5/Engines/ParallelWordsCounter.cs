@@ -1,12 +1,9 @@
-﻿using ngay_5.Core;
+﻿using Microsoft.Extensions.Logging;
+using ngay_5.Core;
 using ngay_5.Utilities;
-
-using System.Collections.Concurrent;
-
-
 using Serilog;
-using Microsoft.Extensions.Logging;
-
+using Serilog.Core;
+using System.Collections.Concurrent;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace ngay_5.Engines
@@ -28,7 +25,7 @@ namespace ngay_5.Engines
                 () => new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase), // Khởi tạo từ điển cục bộ cho mỗi luồng
                 (line, loopState, localDict) =>
                 {
-                    var words = WordsUtility.Extract(line);
+                    var words = WordsUtility.Extract(logger, line);
                     foreach (var word in words)
                     {
                         if (localDict.ContainsKey(word)) localDict[word]++;
