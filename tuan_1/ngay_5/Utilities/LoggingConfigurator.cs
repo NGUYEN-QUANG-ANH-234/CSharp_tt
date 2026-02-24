@@ -17,13 +17,7 @@ namespace ngay_5.Utilities
 
         public static ILoggerFactory CreateFactory() 
         {
-            return LoggerFactory.Create(builder =>
-                {
-                    builder.AddSerilog();
-                }
-            );
+            return LoggerFactory.Create(builder => builder.AddSerilog(Log.Logger));
         }
-
-
     }
 }

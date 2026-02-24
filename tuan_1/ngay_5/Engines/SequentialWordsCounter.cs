@@ -10,35 +10,34 @@ namespace ngay_5.Engines
 {
     public class SequentialWordsCounter : WordsCounter
     {
-        private readonly Dictionary<string, long> _words = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, long> _logTypes = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
 
         public override void Execute(ILogger logger, IEnumerable<string> lines)
         {
             if (lines == null)
             {
-                logger.LogError("Danh sách dòng đầu vào (lines) tại xử lý TUẦN TỰ bị null.");
+                logger.LogCritical("Danh sách dòng đầu vào (lines) tại xử lý TUẦN TỰ bị null.");
+                return;
             }
 
 
             foreach (var line in lines)
             {
-                string[] words = WordsUtility.Extract(logger, line);
+                string logType = WordsUtility.Extract(line);
 
-                foreach (var word in words)
-                {
-                    if (_words.TryGetValue(word, out long currentCount))
+                if (!string.IsNullOrEmpty(logType)) { 
+                    if (_logTypes.TryGetValue(logType, out long currentCount)) 
                     {
-                        _words[word] = currentCount + 1;
+                        _logTypes[logType] = currentCount + 1;
                     }
-                    else
+                    else 
                     {
-                        _words[word] = 1;
+                        _logTypes[logType] = 1;
                     }
                 }
             }
-
         }
 
-        public override IDictionary<string, long> GetResult() => _words;
+        public override IDictionary<string, long> GetResult() => _logTypes;
     }
 }
