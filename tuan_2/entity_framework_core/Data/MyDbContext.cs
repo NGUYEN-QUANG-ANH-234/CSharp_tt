@@ -1,9 +1,7 @@
 ﻿using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using entity_framework_core.Models.Entities;
 
 namespace entity_framework_core.Data
 {
@@ -24,7 +22,9 @@ namespace entity_framework_core.Data
 
         public readonly ILoggerFactory loggerFactory = LoggerFactory.Create(builder => 
         {
-            builder.AddFilter(DbLoggerCategory.Query.Name , LogLevel.Information);
+            //builder.AddFilter(DbLoggerCategory.Query.Name , LogLevel.Information);
+
+            builder.SetMinimumLevel(LogLevel.Warning);
 
             builder.AddConsole();
         });
@@ -39,7 +39,8 @@ namespace entity_framework_core.Data
             optionBuilder.UseMySql( _connectionString, ServerVersion.AutoDetect(_connectionString)); 
         }
 
-
-
+        public DbSet<User> users { get; set; }
+        public DbSet<Post> posts { get; set; }
+        public DbSet<Comment> comments { get; set; }
     }
 }
