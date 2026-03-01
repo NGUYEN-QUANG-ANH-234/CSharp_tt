@@ -8,7 +8,7 @@ namespace entity_framework_core.Models.Entities
     {
         [Key]
         [Column("UserId")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [StringLength(50)]
         public required string FName { get; set; }

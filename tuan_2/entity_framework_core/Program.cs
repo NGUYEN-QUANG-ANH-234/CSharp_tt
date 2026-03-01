@@ -4,34 +4,46 @@ using entity_framework_core.Repositories;
 using entity_framework_core.Utilities;
 using Sprache;
 
+// THAO TAC VOI MIGRATION (SNAPSHOT)
+/* 
+ * dotnet ef migrations add {MigrationName} => Tao Migration
+ * dotnet ef migrations list => Kiem tra cac Migrations hien co
+ * dotnet ef migrations remove {MigrationName} => Xoa Migration
+ * 
+ * dotnet ef database update {MigrationName} => Update phien ban Migration mong muon
+ * dotnet ef database drop -f
+ */
+
 namespace entity_framework_core
 {
     internal class Program
     {
         static void Main(string[] args)
         {
+            // --- CAU HINH HE THONG ---
+
             using var dbContext = new MyDbContext();
 
-            Console.WriteLine("Hello, World!");
+            // -------------------------
+
+            // --- THAO TAC CSDL MYSQL ---
 
             //DbInitializers.CreateDb();
             //DbInitializers.DeleteDb();
-            DbInitializers.RecreateDb();
+            //DbInitializers.RecreateDb();
 
-            Console.WriteLine("Nhap so record cho tung seed cua bang User, Post, Comment: ");
-            int userRecords = Convert.ToInt32(Console.ReadLine());
-            int postRecords = Convert.ToInt32(Console.ReadLine());
-            int commentRecords = Convert.ToInt32(Console.ReadLine());
+            // ---------------------------
 
+            // --- KHOI TAO RECORD GIA CHO CAC BANG DU LIEU ---
 
-            MockDataGenerator.SeedUser(dbContext, userRecords);
-            Console.WriteLine("Hoan thanh tao seed bang User");
-            MockDataGenerator.SeedPost(dbContext, postRecords);
-            Console.WriteLine("Hoan thanh tao seed bang Post");
-            MockDataGenerator.SeedComment(dbContext, commentRecords);
-            Console.WriteLine("Hoan thanh tao seed bang Comment");
+            //MockDataGenerator.SeedUser(dbContext, 100000);
+            //Console.WriteLine("Hoan thanh tao seed bang User");
+            //MockDataGenerator.SeedPost(dbContext, 100000);
+            //Console.WriteLine("Hoan thanh tao seed bang Post");
+            //MockDataGenerator.SeedComment(dbContext, 100000);
+            //Console.WriteLine("Hoan thanh tao seed bang Comment");
 
-
+            // ------------------------------------------------
 
             Console.ReadKey();
         }

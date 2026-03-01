@@ -7,13 +7,13 @@ namespace entity_framework_core.Models.Entities
     public class Comment
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [StringLength(50)]
         public required string Text { get; set; }
 
         // Self-Reference
-        public int? ParentCommentId { get; set; } 
+        public Guid? ParentCommentId { get; set; } 
 
         [ForeignKey("ParentCommentId")]
         public Comment? ParentComment { get; set; }
@@ -22,13 +22,13 @@ namespace entity_framework_core.Models.Entities
         // -------------------------------
 
         // Foreign key
-        public required int PostId { get; set; }
+        public required Guid PostId { get; set; }
 
         [ForeignKey("PostId")]
         [Required]
         public required Post Post { get; set; }
 
-        public required int UserId { get; set; }
+        public required Guid UserId { get; set; }
 
         [ForeignKey("UserId")]
         [Required]                                                                                                                                          

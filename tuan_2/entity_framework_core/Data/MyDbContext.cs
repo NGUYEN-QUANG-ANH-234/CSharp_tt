@@ -22,7 +22,8 @@ namespace entity_framework_core.Data
 
         public readonly ILoggerFactory loggerFactory = LoggerFactory.Create(builder => 
         {
-            //builder.AddFilter(DbLoggerCategory.Query.Name , LogLevel.Information);
+            builder.AddFilter(DbLoggerCategory.Query.Name , LogLevel.Information);
+            //builder.AddFilter(DbLoggerCategory.Database.Name, LogLevel.Information);
 
             builder.SetMinimumLevel(LogLevel.Warning);
 

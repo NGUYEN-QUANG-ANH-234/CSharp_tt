@@ -1,10 +1,13 @@
 ﻿using Bogus;
 using entity_framework_core.Data;
 using entity_framework_core.Models.Entities;
-using entity_framework_core.Repositories;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using entity_framework_core.Repositories.Implementations;
+
+/*
+ * Khi muon tao them cac records moi voi cac truong du lieu moi 
+ * => bo sung luat RuleFor cua bang tuong ung da hay doi.
+ */
+
 
 namespace entity_framework_core.Utilities
 {
@@ -12,7 +15,7 @@ namespace entity_framework_core.Utilities
     {
         private const int batchSize = 5000;
 
-        public static void SeedUser(MyDbContext dbContext, int rowsNumber)
+        public static async Task SeedUser(MyDbContext dbContext, int rowsNumber)
         {
             var user = new UserRepo(dbContext);
 
@@ -34,8 +37,7 @@ namespace entity_framework_core.Utilities
 
                 List<User> users = userFaker.Generate(insertedRow);
 
-                user.Insert(users);
-                dbContext.SaveChanges();
+                await user.InsertAsync(users);
                 dbContext.ChangeTracker.Clear();
 
                 totalInserted += insertedRow;
@@ -46,7 +48,7 @@ namespace entity_framework_core.Utilities
             dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
         }
 
-        public static void SeedPost(MyDbContext dbContext, int rowsNumber)
+        public static async Task SeedPost(MyDbContext dbContext, int rowsNumber)
         {
             var post = new PostRepo(dbContext);
             var userIds = dbContext.users.Select(u => u.Id).ToList();
@@ -68,8 +70,7 @@ namespace entity_framework_core.Utilities
 
                 List<Post> posts = postFaker.Generate(insertedRow);
 
-                post.Insert(posts);
-                dbContext.SaveChanges();
+                await post.InsertAsync(posts);
                 dbContext.ChangeTracker.Clear();
 
                 totalInserted += insertedRow;
@@ -80,7 +81,7 @@ namespace entity_framework_core.Utilities
             dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
         }
 
-        public static void SeedComment(MyDbContext dbContext, int rowsNumber)
+        public static async Task SeedComment(MyDbContext dbContext, int rowsNumber)
         {
             var comment = new CommentRepo(dbContext);  
             var userId = dbContext.users.Select(u => u.Id).ToList();
@@ -92,13 +93,13 @@ namespace entity_framework_core.Utilities
                 return;
             }
 
-            int rootCount = (int)(rowsNumber * 0.7);
+            int rootCount = (int)(rowsNumber * 0.5);
             // Comment cap 1 (cap cha nhat)
             var commentFaker = new Faker<Comment>("vi")
                 .RuleFor(c => c.Text, f => f.Lorem.Sentence(2))
                 .RuleFor(c => c.PostId, f => f.PickRandom(postId))
                 .RuleFor(c => c.UserId, f => f.PickRandom(userId))
-                .RuleFor(c => c.ParentCommentId, f => (int?)null);
+                .RuleFor(c => c.ParentCommentId, f => (Guid?)null);
 
             int totalInserted = 0;
             dbContext.ChangeTracker.AutoDetectChangesEnabled = false;
@@ -108,42 +109,70 @@ namespace entity_framework_core.Utilities
 
                 List<Comment> comments = commentFaker.Generate(insertedRow);
 
-                comment.Insert(comments);
-                dbContext.SaveChanges();
+                await comment.InsertAsync(comments);
                 dbContext.ChangeTracker.Clear();
 
                 totalInserted += insertedRow;
 
-                Console.WriteLine($"Da tao thanh cong {totalInserted}/{rowsNumber}");
+                Console.WriteLine($"Da tao thanh cong {totalInserted}/{rootCount}");
             }
 
-            // Comment cac cap con
-            var parentIds = dbContext.comments.Select(c => c.Id).ToList();
+            // Comment con cap 1
+            var parent_1_Ids = dbContext.comments.Select(c => c.Id).ToList();
 
-            var replyFaker = new Faker<Comment>("vi")
+            var reply_1_Faker = new Faker<Comment>("vi")
                 .RuleFor(c => c.Text, f => f.Lorem.Sentence(1))
                 .RuleFor(c => c.PostId, f => f.PickRandom(postId))
                 .RuleFor(c => c.UserId, f => f.PickRandom(userId))
-                // Ngẫu nhiên chọn một comment đã có để làm cha
-                .RuleFor(c => c.ParentCommentId, f => f.PickRandom(parentIds));
+                // Ngau nhien 1 comment da ton tai lam cha
+                .RuleFor(c => c.ParentCommentId, f => f.PickRandom(parent_1_Ids));
 
-            int replyCount = rowsNumber - rootCount;
+            int reply_1_Count = (int) (0.3 * rowsNumber);
             int totalInserted_1 = 0;
 
-            for (int i = 0; i < replyCount; i += batchSize)
+            for (int i = 0; i < reply_1_Count; i += batchSize)
             {
-                var insertedRow = Math.Min(batchSize, replyCount - i);
+                var insertedRow = Math.Min(batchSize, reply_1_Count - i);
 
-                List<Comment> comments = replyFaker.Generate(insertedRow);
+                List<Comment> comments = reply_1_Faker.Generate(insertedRow);
 
-                comment.Insert(comments);
-                dbContext.SaveChanges();
+                await comment.InsertAsync(comments);
                 dbContext.ChangeTracker.Clear();
 
                 totalInserted_1 += insertedRow;
 
-                Console.WriteLine($"Da tao thanh cong {totalInserted_1}/{rowsNumber}");
+                Console.WriteLine($"Da tao thanh cong {totalInserted_1}/{reply_1_Count}");
             }
+
+            // Comment con cap 2
+            var parent_2_Ids = dbContext.comments.Where(c => c.ParentCommentId != null).Select(c => c.Id).ToList();
+
+            var reply_2_Faker = new Faker<Comment>("vi")
+                .RuleFor(c => c.Text, f => f.Lorem.Sentence(1))
+                .RuleFor(c => c.PostId, f => f.PickRandom(postId))
+                .RuleFor(c => c.UserId, f => f.PickRandom(userId))
+                // Ngau nhien 1 comment da ton tai lam cha
+                .RuleFor(c => c.ParentCommentId, f => f.PickRandom(parent_2_Ids));
+
+            int reply_2_Count = (int)(0.2 * rowsNumber);
+            int totalInserted_2 = 0;
+
+            for (int i = 0; i < reply_2_Count; i += batchSize)
+            {
+                var insertedRow = Math.Min(batchSize, reply_2_Count - i);
+
+                List<Comment> comments = reply_2_Faker.Generate(insertedRow);
+
+                await comment.InsertAsync(comments);
+                dbContext.ChangeTracker.Clear();
+
+                totalInserted_2 += insertedRow;
+
+                Console.WriteLine($"Da tao thanh cong {totalInserted_2}/{reply_2_Count}");
+            }
+
+
+
             dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
         }
     }

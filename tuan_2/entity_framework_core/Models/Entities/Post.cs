@@ -7,7 +7,7 @@ namespace entity_framework_core.Models.Entities
     public class Post
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required]
         [StringLength(200)]
@@ -22,7 +22,7 @@ namespace entity_framework_core.Models.Entities
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Foreign key
-        public required int UserId { get; set; }
+        public required Guid UserId { get; set; }
 
         [ForeignKey("UserId")]
         public required User Author { get; set; }
