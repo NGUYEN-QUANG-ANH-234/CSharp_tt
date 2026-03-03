@@ -62,7 +62,7 @@ namespace entity_framework_core.Repositories.Implementations
             if (includeReplies)
             {
                 var allData = await query.Include(c => c.User).ToListAsync();
-                var roots = allData.Where(c => c.ParentCommentId == null).ToList();
+                var roots = allData.ToList();
                 return roots;
             }
             else

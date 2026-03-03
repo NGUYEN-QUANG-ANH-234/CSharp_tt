@@ -28,12 +28,9 @@ namespace entity_framework_core
             Console.WriteLine("DAY 8: PHÂN TÍCH VẤN ĐỀ N+1");
             Console.WriteLine(new string('=', 60));
 
-            // Demo Lazy Loading (Trigger query trong vòng lặp)
-            var lazyComments = await dbContext.comments.Take(5).ToListAsync();
-            Console.WriteLine("> [Lazy Loading] Đang in 5 mẫu (Xem SQL Log để thấy N+1):");
-            foreach (var c in lazyComments) Console.WriteLine($"  - {c.Text} (By: {c.User.FName})");
-
             // Demo Explicit Loading (Nạp thủ công từng Reference)
+            var sw = Stopwatch.StartNew();
+            
             var expComments = await dbContext.comments.Take(5).ToListAsync();
             Console.WriteLine("\n> [Explicit Loading] Nạp thủ công Reference(x => x.User):");
             foreach (var c in expComments)
@@ -41,6 +38,32 @@ namespace entity_framework_core
                 await dbContext.Entry(c).Reference(x => x.User).LoadAsync();
                 Console.WriteLine($"  - {c.Text} (By: {c.User.FName})");
             }
+            sw.Stop();
+            performanceResults.Add(("Explicit", sw.ElapsedMilliseconds, "1 Query + N query"));
+
+            // Demo Lazy Loading (Trigger query trong vòng lặp)
+            sw.Restart();
+            var lazyComments = await dbContext.comments.Take(5).ToListAsync();
+            Console.WriteLine("> [Lazy Loading] Đang in 5 mẫu (Xem SQL Log để thấy N+1):");
+            foreach (var c in lazyComments) Console.WriteLine($"  - {c.Text} (By: {c.User.FName})");
+            sw.Stop();
+            performanceResults.Add(("Lazy", sw.ElapsedMilliseconds, "1 Query + N query"));
+
+
+            // Giải quyết bằng Eager Loading
+            sw.Restart();
+            var eagerComments = await dbContext.comments.Take(5).Include(c => c.User).ToArrayAsync();
+            Console.WriteLine("\n> [Eager Loading] Chủ động nạp toàn bộ dữ liệu (có thể dùng):");
+            foreach (var c in eagerComments)
+            {
+                await dbContext.Entry(c).Reference(x => x.User).LoadAsync();
+                Console.WriteLine($"  - {c.Text} (By: {c.User.FName})");
+            }
+            sw.Stop();
+            performanceResults.Add(("Eager", sw.ElapsedMilliseconds, "1 Query + Fix-up RAM"));
+
+            // Hiển thị bảng so sánh hiệu năng
+            DataVisualizer.DisplayComparisonTable(performanceResults);
 
             // --- DAY 9: SO SÁNH HIỆU NĂNG ---
             Console.WriteLine("\n" + new string('=', 60));
@@ -48,7 +71,7 @@ namespace entity_framework_core
             Console.WriteLine(new string('=', 60));
 
             // 1. Đo Eager Loading
-            var sw = Stopwatch.StartNew();
+            sw.Restart();
             var eagerTree = await commentRepo.GetAllCommentsForPost_EagerLoading(postId);
             sw.Stop();
             performanceResults.Add(("Eager (Include)", sw.ElapsedMilliseconds, "1 Query + Fix-up RAM"));
@@ -72,9 +95,13 @@ namespace entity_framework_core
             Console.WriteLine("\nCAU TRUC CAY COMMENT (TRỰC QUAN):");
             DataVisualizer.VisualizingTree(eagerTree); // Sử dụng kết quả từ Eager Loading
 
-            Console.WriteLine("\nKẾT QUẢ PHÁ ĐỆ QUY (FLATTEN):");
-            var flatList = commentRepo.FlattenTreeWithAnalysis(eagerTree); 
-            DataVisualizer.ShowFlattenedResult(flatList); 
+            Console.WriteLine("\nKẾT QUẢ PHÁ ĐỆ QUY (FLATTEN) - EXPLICIT:");
+            var explicit_FlatList = commentRepo.FlattenTreeWithAnalysis(explicitList); 
+            DataVisualizer.ShowFlattenedResult(explicit_FlatList);
+
+            Console.WriteLine("\nKẾT QUẢ PHÁ ĐỆ QUY (FLATTEN) - CTE:");
+            var cte_FlatList = commentRepo.FlattenTreeWithAnalysis(explicitList);
+            DataVisualizer.ShowFlattenedResult(cte_FlatList);
 
             Console.ReadKey();
         }

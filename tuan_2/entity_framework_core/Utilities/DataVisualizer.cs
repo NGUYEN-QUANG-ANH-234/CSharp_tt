@@ -48,6 +48,8 @@ namespace entity_framework_core.Utilities
                 Console.WriteLine(string.Format("| {0,-25} | {1,-10} | {2,-25} |", res.Method, res.Time, res.Note));
             }
             Console.WriteLine(new string('-', 70));
+
+            results.Clear();
         }
 
         // --- DAY 9: KET QUA PHÁ ĐỆ QUY (FLATTEN) ---
