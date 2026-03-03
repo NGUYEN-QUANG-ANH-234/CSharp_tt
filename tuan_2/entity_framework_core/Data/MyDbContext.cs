@@ -57,13 +57,13 @@ namespace entity_framework_core.Data
                 .HasForeignKey(c => c.ParentCommentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // VD: USER ↔ POST (1–1)
-            //optionBuilder.Entity<User>()
+            //VD: USER ↔ POST(1–1)
+            //modelBuilder.Entity<User>()
             //    .HasOne(u => u.Post) // Chuyen List<Post> trong User.cs thanh Post  
             //    .WithOne(p => p.Author)
             //    .HasForeignKey<Post>(p => p.UserId);
 
-            //optionBuilder.Entity<Post>()
+            //modelBuilder.Entity<Post>()
             //    .HasIndex(p => p.UserId)
             //    .IsUnique();
         }
