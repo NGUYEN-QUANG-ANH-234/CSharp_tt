@@ -3,9 +3,6 @@ using entity_framework_core.Models.Entities;
 using entity_framework_core.Repositories.BaseRepositories;
 using entity_framework_core.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace entity_framework_core.Repositories.Implementations
 {
@@ -55,7 +52,8 @@ namespace entity_framework_core.Repositories.Implementations
         {
             await _dbContext.comments.Where(c => c.Id == id).ExecuteDeleteAsync();
         }
- 
+
+        //// ----------------------------------
         public async Task<List<Comment>> GetAllCommentsForPost_EagerLoading(Guid postId, bool includeReplies = true)
         {
 
@@ -94,14 +92,14 @@ namespace entity_framework_core.Repositories.Implementations
         {
             var results = await _dbContext.comments
                 .FromSqlInterpolated($@"
-            WITH RECURSIVE CommentTree AS (
+                WITH RECURSIVE CommentTree AS (
                 SELECT * FROM comments 
                 WHERE PostId = {postId} AND ParentCommentId IS NULL
                 UNION ALL
                 SELECT c.* FROM comments c 
                 INNER JOIN CommentTree ct ON c.ParentCommentId = ct.Id
-            )
-            SELECT * FROM CommentTree")
+                )
+                SELECT * FROM CommentTree")
                 .Include(c => c.User)
                 .AsNoTracking()
                 .ToListAsync();

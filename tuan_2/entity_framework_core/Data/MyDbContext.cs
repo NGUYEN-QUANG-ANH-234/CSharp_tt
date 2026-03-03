@@ -11,7 +11,7 @@ namespace entity_framework_core.Data
     {
         private readonly string _connectionString;
 
-        public MyDbContext() {
+        public MyDbContext(){
             DotNetEnv.Env.Load();
             var _dbServer = Environment.GetEnvironmentVariable("DB_SERVER");
             var _dbServerName = Environment.GetEnvironmentVariable("DB_SERVER_NAME");
@@ -24,8 +24,8 @@ namespace entity_framework_core.Data
 
         public readonly ILoggerFactory loggerFactory = LoggerFactory.Create(builder => 
         {
-            //builder.AddFilter(DbLoggerCategory.Query.Name , LogLevel.Information);
-            //builder.AddFilter(DbLoggerCategory.Database.Name, LogLevel.Information);
+            builder.AddFilter(DbLoggerCategory.Query.Name , LogLevel.Information);
+            builder.AddFilter(DbLoggerCategory.Database.Name, LogLevel.Information);
 
             builder.SetMinimumLevel(LogLevel.Warning);
 

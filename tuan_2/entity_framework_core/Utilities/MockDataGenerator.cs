@@ -28,7 +28,6 @@ namespace entity_framework_core.Utilities
                 .RuleFor(u => u.PhoneNumber, f => f.Phone.PhoneNumber("###-###-####"));
             
             int batchSize = 5000;
-            int totalInserted = 0;
 
             dbContext.ChangeTracker.AutoDetectChangesEnabled = false;
 
@@ -40,10 +39,6 @@ namespace entity_framework_core.Utilities
 
                 await user.InsertAsync(users);
                 dbContext.ChangeTracker.Clear();
-
-                totalInserted += insertedRow;
-
-                Console.WriteLine($"Da tao thanh cong {totalInserted}/{rowsNumber}");
             }
 
             dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
@@ -61,8 +56,6 @@ namespace entity_framework_core.Utilities
                 .RuleFor(p => p.CreatedAt, f => f.Date.Recent(365).ToUniversalTime())
                 .RuleFor(p => p.UserId, f => f.PickRandom(userIds));
 
-            int totalInserted = 0;
-
             dbContext.ChangeTracker.AutoDetectChangesEnabled = false;
 
             for (int i = 0; i < rowsNumber; i += batchSize)
@@ -73,10 +66,6 @@ namespace entity_framework_core.Utilities
 
                 await post.InsertAsync(posts);
                 dbContext.ChangeTracker.Clear();
-
-                totalInserted += insertedRow;
-
-                Console.WriteLine($"Da tao thanh cong {totalInserted}/{rowsNumber}");
             }
 
             dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
@@ -140,7 +129,6 @@ namespace entity_framework_core.Utilities
 
                     await commentRepo.InsertAsync(items);
                     dbContext.ChangeTracker.Clear();
-                    Console.WriteLine($"Da tao thanh cong: {i + items.Count}/{count}");
                 }
             }
         }

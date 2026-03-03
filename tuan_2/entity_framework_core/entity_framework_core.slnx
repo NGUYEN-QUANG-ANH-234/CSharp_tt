@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="../entity_framework_core.test/entity_framework_core.test.csproj" Id="80c9604d-d0eb-4a84-8c5c-99d70cfaedf0" />
   <Project Path="entity_framework_core.csproj" />
 </Solution>

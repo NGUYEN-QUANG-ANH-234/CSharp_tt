@@ -18,8 +18,8 @@ namespace entity_framework_core
             var postId = Guid.Parse("08de7923-12ef-44d3-88c9-83decc8fd97f");
             var performanceResults = new List<(string Method, long Time, string Note)>();
 
-            // --- DAY 6 & 7: SEED DATA ---
-            //Console.WriteLine("DAY 6-7: TẠO DATASET");
+            //// --- DAY 6: SEED DATA ---
+            //Console.WriteLine("DAY 6: TẠO DATASET");
             //await MockDataGenerator.SeedAll(dbContext);
             //DataVisualizer.ShowSeedReport(100000, 100000, 100000);
 
@@ -61,7 +61,7 @@ namespace entity_framework_core
 
             // 3. Đo CTE Query
             sw.Restart();
-            var cteFlat = await commentRepo.GetAllCommentsCTE(postId);
+            var cteFlatList = await commentRepo.GetAllCommentsCTE(postId);
             sw.Stop();
             performanceResults.Add(("CTE Recursive", sw.ElapsedMilliseconds, "DB-side Recursion"));
 
