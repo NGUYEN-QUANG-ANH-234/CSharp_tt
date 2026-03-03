@@ -45,7 +45,6 @@ namespace entity_framework_core.Repositories.Implementations
             await _dbContext.SaveChangesAsync();
         }
 
-
         public async Task DeleteAsync(Guid id)
         {
             await _dbContext.users.Where(p => p.Id == id).ExecuteDeleteAsync();

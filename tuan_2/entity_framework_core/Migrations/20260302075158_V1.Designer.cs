@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using entity_framework_core.Data;
 
@@ -11,16 +12,15 @@ using entity_framework_core.Data;
 namespace entity_framework_core.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260302075158_V1")]
+    partial class V1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.2")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -130,17 +130,16 @@ namespace entity_framework_core.Migrations
                 {
                     b.HasOne("entity_framework_core.Models.Entities.Comment", "ParentComment")
                         .WithMany("Replies")
-                        .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ParentCommentId");
 
                     b.HasOne("entity_framework_core.Models.Entities.Post", "Post")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("entity_framework_core.Models.Entities.User", "User")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -155,7 +154,7 @@ namespace entity_framework_core.Migrations
             modelBuilder.Entity("entity_framework_core.Models.Entities.Post", b =>
                 {
                     b.HasOne("entity_framework_core.Models.Entities.User", "Author")
-                        .WithMany("Posts")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -166,18 +165,6 @@ namespace entity_framework_core.Migrations
             modelBuilder.Entity("entity_framework_core.Models.Entities.Comment", b =>
                 {
                     b.Navigation("Replies");
-                });
-
-            modelBuilder.Entity("entity_framework_core.Models.Entities.Post", b =>
-                {
-                    b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("entity_framework_core.Models.Entities.User", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }

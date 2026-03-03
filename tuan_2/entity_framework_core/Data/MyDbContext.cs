@@ -1,7 +1,9 @@
 ﻿using DotNetEnv;
+using entity_framework_core.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using entity_framework_core.Models.Entities;
+using Microsoft.Extensions.Options;
+using System.Reflection.Emit;
 
 namespace entity_framework_core.Data
 {
@@ -22,7 +24,7 @@ namespace entity_framework_core.Data
 
         public readonly ILoggerFactory loggerFactory = LoggerFactory.Create(builder => 
         {
-            builder.AddFilter(DbLoggerCategory.Query.Name , LogLevel.Information);
+            //builder.AddFilter(DbLoggerCategory.Query.Name , LogLevel.Information);
             //builder.AddFilter(DbLoggerCategory.Database.Name, LogLevel.Information);
 
             builder.SetMinimumLevel(LogLevel.Warning);
@@ -36,9 +38,36 @@ namespace entity_framework_core.Data
             // Dam bao thuc hien duoc cac thiet lap san trong lop cha cua no
             base.OnConfiguring(optionBuilder);
 
-            optionBuilder.UseLoggerFactory(loggerFactory);
-            optionBuilder.UseMySql( _connectionString, ServerVersion.AutoDetect(_connectionString)); 
+
+            optionBuilder
+                .UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString))
+                .UseLoggerFactory(loggerFactory)
+                .EnableDetailedErrors()
+                .UseLazyLoadingProxies();
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Self-reference Comment
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.ParentComment)
+                .WithMany(c => c.Replies)
+                .HasForeignKey(c => c.ParentCommentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // VD: USER ↔ POST (1–1)
+            //optionBuilder.Entity<User>()
+            //    .HasOne(u => u.Post) // Chuyen List<Post> trong User.cs thanh Post  
+            //    .WithOne(p => p.Author)
+            //    .HasForeignKey<Post>(p => p.UserId);
+
+            //optionBuilder.Entity<Post>()
+            //    .HasIndex(p => p.UserId)
+            //    .IsUnique();
+        }
+
 
         public DbSet<User> users { get; set; }
         public DbSet<Post> posts { get; set; }

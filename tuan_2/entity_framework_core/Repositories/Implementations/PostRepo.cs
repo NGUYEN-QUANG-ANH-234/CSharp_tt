@@ -14,34 +14,10 @@ namespace entity_framework_core.Repositories.Implementations
             _dbContext = dbContext;
         }
 
-        //public void Insert(List<Post> post) {
-        //    _dbContext.posts.AddRange(post);
-        //}
-
-        //public List<Post> Get() 
-        //{
-        //    return _dbContext.posts.Include(p => p).ToList();
-        //}
-
-        //public void Update(List<Post> post)
-        //{
-        //    _dbContext.posts.UpdateRange(post);
-        //}
-
-        //public void Delete(int id)
-        //{
-        //    var post = _dbContext.posts.Find(id);
-        //    if (post != null) {
-        //        _dbContext.posts.Remove(post);
-        //    }            
-        //}
-
-
-        // ------------------------------------
         public async Task InsertAsync(List<Post> entities)
         {
             await _dbContext.posts.AddRangeAsync(entities);
-
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<Post?> GetByIdAsync(Guid id)
@@ -71,13 +47,6 @@ namespace entity_framework_core.Repositories.Implementations
 
         public async Task DeleteAsync(Guid id)
         {
-            //var query = await _dbContext.comments.FindAsync(id);
-
-            //if (query != null) {
-            //    _dbContext.comments.Remove(query);
-            //    await _dbContext.SaveChangesAsync();
-            //}
-
             await _dbContext.posts.Where(p => p.Id == id).ExecuteDeleteAsync();
         }
     }

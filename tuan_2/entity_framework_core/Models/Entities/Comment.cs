@@ -12,13 +12,18 @@ namespace entity_framework_core.Models.Entities
         [StringLength(50)]
         public required string Text { get; set; }
 
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
         // Self-Reference
-        public Guid? ParentCommentId { get; set; } 
 
         [ForeignKey("ParentCommentId")]
-        public Comment? ParentComment { get; set; }
+        public Guid? ParentCommentId { get; set; }
+        
+        public virtual Comment? ParentComment { get; set; }
 
-        public List<Comment> Replies { get; set; } = new List<Comment>();
+        public virtual List<Comment> Replies { get; set; } = new List<Comment>();
+
+
         // -------------------------------
 
         // Foreign key
@@ -26,13 +31,13 @@ namespace entity_framework_core.Models.Entities
 
         [ForeignKey("PostId")]
         [Required]
-        public required Post Post { get; set; }
+        public virtual required Post Post { get; set; }
 
         public required Guid UserId { get; set; }
 
         [ForeignKey("UserId")]
         [Required]                                                                                                                                          
-        public required User User { get; set; }
+        public virtual required User User { get; set; }
         // -------------------------------
     }
 }

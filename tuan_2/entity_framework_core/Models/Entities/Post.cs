@@ -25,7 +25,9 @@ namespace entity_framework_core.Models.Entities
         public required Guid UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public required User Author { get; set; }
+        public virtual required User Author { get; set; }
         // -------------------------------
+
+        public virtual List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }
