@@ -69,7 +69,7 @@ namespace entity_framework_core
             Console.WriteLine("\n" + new string('=', 60));
             Console.WriteLine("DAY 9: PERFORMANCE TUNING (POST-LEVEL)");
             Console.WriteLine(new string('=', 60));
-
+            
             // 1. Đo Eager Loading
             sw.Restart();
             var eagerTree = await commentRepo.GetAllCommentsForPost_EagerLoading(postId);
@@ -87,6 +87,18 @@ namespace entity_framework_core
             var cteFlatList = await commentRepo.GetAllCommentsCTE(postId);
             sw.Stop();
             performanceResults.Add(("CTE Recursive", sw.ElapsedMilliseconds, "DB-side Recursion"));
+
+            // 5.Đo DeRecursion_EagerLoaing Query
+            sw.Restart();
+            var deCurs_Eager_FlatList = await commentRepo.DeRecursion_EagerLoading(postId);
+            sw.Stop();
+            performanceResults.Add(("Eager (DeRecursion)", sw.ElapsedMilliseconds, "De-Recursion"));
+
+            // 4.Đo DeRecursion_LazyLoading Query
+            sw.Restart();
+            var deCurs_Lazy_FlatList = await commentRepo.DeRecursion_LazyLoading(postId);
+            sw.Stop();
+            performanceResults.Add(("Lazy (DeRecursion)", sw.ElapsedMilliseconds, "De-Recursion"));
 
             // Hiển thị bảng so sánh hiệu năng
             DataVisualizer.DisplayComparisonTable(performanceResults);

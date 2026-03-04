@@ -3,6 +3,8 @@ using entity_framework_core.Models.Entities;
 using entity_framework_core.Repositories.BaseRepositories;
 using entity_framework_core.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Net.NetworkInformation;
+using System.Net.WebSockets;
 
 namespace entity_framework_core.Repositories.Implementations
 {
@@ -98,6 +100,7 @@ namespace entity_framework_core.Repositories.Implementations
                 UNION ALL
                 SELECT c.* FROM comments c 
                 INNER JOIN CommentTree ct ON c.ParentCommentId = ct.Id
+                WHERE c.PostId = {postId}
                 )
                 SELECT * FROM CommentTree")
                 .Include(c => c.User)
@@ -125,6 +128,69 @@ namespace entity_framework_core.Repositories.Implementations
             }
 
             return flatList;
+        }
+
+        public async Task<List<Comment>> DeRecursion_LazyLoading(Guid postId) 
+        {
+            var result = new List<Comment>();
+            var process_Stack = new Stack<Comment>();
+
+            Comment current;
+
+            var queryAllParentsCmtInPost = await _dbContext.comments.Where(c => c.PostId == postId && c.ParentCommentId == null).ToListAsync();
+
+            foreach (var parentCmt in queryAllParentsCmtInPost) { 
+                process_Stack.Push(parentCmt);
+            }
+
+            while (process_Stack.Count > 0) 
+            { 
+                current = process_Stack.Pop();
+                result.Add(current);
+                if (current.Replies != null) 
+                {
+                    foreach (var reply in current.Replies) 
+                    {
+                        process_Stack.Push(reply);
+                    }
+                }
+            
+            }
+            return result;
+        }
+
+        public async Task<List<Comment>> DeRecursion_EagerLoading(Guid postId) 
+        {
+            var queryAllCmtInPost = await _dbContext.comments.Where(c => c.PostId == postId).ToListAsync();
+            var queryAllParentCmt = queryAllCmtInPost.Where(c => c.ParentCommentId == null).ToList();
+
+            var result = new List<Comment>();
+            var process_Stack = new Stack<Comment>();
+
+            Comment current;
+
+            foreach (var child in queryAllParentCmt) 
+            {
+                process_Stack.Push(child);
+            }
+
+            while (process_Stack.Count > 0) 
+            {
+                current = process_Stack.Pop();
+                result.Add(current);
+
+                var queryChildCmt = queryAllCmtInPost.Where(c => c.ParentCommentId == current.Id).ToList();
+
+                if (queryChildCmt.Count != 0) 
+                {
+                    foreach (var childCmt in queryChildCmt) 
+                    { 
+                        process_Stack.Push(childCmt);
+                    }
+                }
+            }
+
+            return result;            
         }
     }
 }
