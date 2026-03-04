@@ -1,6 +1,9 @@
-﻿using entity_framework_core.Models.Entities;
-using System;
-using System.Collections.Generic;
+﻿using entity_framework_core.Data;
+using entity_framework_core.Models.Entities;
+using entity_framework_core.Repositories.BaseRepositories;
+using entity_framework_core.Repositories.Implementations;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Linq;
 
 namespace entity_framework_core.Utilities
@@ -62,6 +65,6 @@ namespace entity_framework_core.Utilities
             {
                 Console.WriteLine($"  [{i + 1}] ID: {flatList[i].Id.ToString()[..8]}... | Content: {flatList[i].Text}");
             }
-        }
+        }       
     }
 }

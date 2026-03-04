@@ -11,5 +11,7 @@ namespace entity_framework_core.Repositories.BaseRepositories
         Task<List<Comment>> GetAllCommentsForPost_ExplicitLoading(Guid postId, bool includeReplies = true);
         Task<List<Comment>> GetAllCommentsCTE(Guid postId);
         List<Comment> FlattenTreeWithAnalysis(List<Comment> roots);
+        Task<List<Comment>> DeRecursion_LazyLoading(Guid postId);
+        Task<List<Comment>> DeRecursion_EagerLoading(Guid postId);
     }
 }
