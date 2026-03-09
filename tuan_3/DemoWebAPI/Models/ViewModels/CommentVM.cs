@@ -6,12 +6,12 @@ namespace DemoWebAPI.Models.ViewModels
     public class CommentVM
     {
         public Guid Id { get; set; }
-        public string Text { get; set; }
+        public string Text { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
 
         // Thông tin người dùng tối giản
         public Guid UserId { get; set; }
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         // Thông tin phân cấp
         public Guid? ParentCommentId { get; set; }

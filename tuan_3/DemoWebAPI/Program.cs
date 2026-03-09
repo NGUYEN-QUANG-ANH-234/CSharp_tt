@@ -12,16 +12,17 @@ namespace DemoWebAPI
 
             var builder = WebApplication.CreateBuilder(args);
 
+            // Đăng ký Infrastructure (đã bao gồm SwaggerGen)
             builder.Services.AddInfrastructure(builder.Configuration);
 
             var app = builder.Build();
 
+            // Đảm bảo UseDevTools được gọi ĐẦU TIÊN để cấu hình Swagger
             app.UseDevTools();
 
+            // Các Middleware khác
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();

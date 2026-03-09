@@ -8,7 +8,7 @@ using DemoWebAPI.Models.ViewModels;
 namespace DemoWebAPI.Controllers
 {
     [ApiController]
-    [Route("api/posts/{postId}/comments")]
+    [Route("api/[controller]")]
     public class CommentController : ControllerBase
     {
         private readonly ICommentRepo _commentRepo;
@@ -20,7 +20,7 @@ namespace DemoWebAPI.Controllers
 
 
         // 1. Create
-        [HttpPost]
+        [HttpPost("/api/posts/{postId}/comments")]
         public async Task<IActionResult> CreateComment(Guid postId, [FromBody] CreateCommentDto createDto)
         {
             if (createDto == null) return BadRequest();
@@ -44,7 +44,7 @@ namespace DemoWebAPI.Controllers
 
 
         // 2. Read
-        [HttpGet("tree")]
+        [HttpGet("/api/posts/{postId}/comments/tree")]
         public async Task<IActionResult> GetCommentsTree(Guid postId)
         {
             var comments = await _commentRepo.GetAllCommentsForPost_EagerLoading(postId);
@@ -54,7 +54,7 @@ namespace DemoWebAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("flat")]
+        [HttpGet("/api/posts/{postId}/comments/flat")]
         public async Task<IActionResult> GetCommentsFlat(Guid postId)
         {
             var flatEntities = await _commentRepo.GetAllCommentsCTE(postId);
@@ -78,7 +78,7 @@ namespace DemoWebAPI.Controllers
                 Id = e.Id,
                 Text = e.Text,
                 UserName = e.User?.FName + " " + e.User?.LName,
-                Replies = MapToDto(e.Replies) // Đệ quy map các con
+                Replies = e.Replies != null ? MapToDto(e.Replies) : new List<CommentVM>() // Đệ quy map các con
             }).ToList();
         }
 
