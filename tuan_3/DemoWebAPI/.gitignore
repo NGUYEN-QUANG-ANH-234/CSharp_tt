@@ -1,0 +1,14 @@
+﻿# Chặn các thư mục rác khi biên dịch
+bin/
+obj/
+
+# Chặn file biến môi trường 
+.env
+
+# Chặn các tệp cấu hình cá nhân của Visual Studio
+.vs/
+*.user
+*.suo
+
+# Chặn các gói thư viện tải về
+package/

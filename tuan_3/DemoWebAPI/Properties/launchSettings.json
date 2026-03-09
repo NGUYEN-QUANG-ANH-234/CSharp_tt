@@ -1,0 +1,24 @@
+﻿{
+    "profiles": {
+        "http": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true, // Đổi thành true
+            "launchUrl": "", // Thêm dòng này để chạy thẳng vào API weather
+            "applicationUrl": "http://localhost:5031",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        "https": {
+            "commandName": "Project",
+            "dotnetRunMessages": true,
+            "launchBrowser": true, // Đổi thành true
+            "launchUrl": "swagger", // Hoặc để "swagger" nếu dùng Swagger UI
+            "applicationUrl": "https://localhost:7203;http://localhost:5031",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    }
+}
