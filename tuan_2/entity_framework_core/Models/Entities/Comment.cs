@@ -7,9 +7,9 @@ namespace entity_framework_core.Models.Entities
     public class Comment
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-        [StringLength(50)]
+        [StringLength(1000)]
         public required string Text { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -31,13 +31,13 @@ namespace entity_framework_core.Models.Entities
 
         [ForeignKey("PostId")]
         [Required]
-        public virtual required Post Post { get; set; }
+        public virtual Post? Post { get; set; }
 
         public required Guid UserId { get; set; }
 
         [ForeignKey("UserId")]
         [Required]                                                                                                                                          
-        public virtual required User User { get; set; }
+        public virtual User? User { get; set; }
         // -------------------------------
     }
 }

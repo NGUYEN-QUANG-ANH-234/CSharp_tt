@@ -18,6 +18,12 @@ namespace entity_framework_core.Repositories.Implementations
 
         //// ----------------------------------
 
+        public async Task InsertAsync(Comment entities)
+        {
+            await _dbContext.comments.AddAsync(entities);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task InsertAsync(List<Comment> entities)
         {
             await _dbContext.comments.AddRangeAsync(entities);

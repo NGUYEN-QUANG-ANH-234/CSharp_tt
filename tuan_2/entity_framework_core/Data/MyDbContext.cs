@@ -9,8 +9,12 @@ namespace entity_framework_core.Data
 {
     public class MyDbContext : DbContext
     {
-        private readonly string _connectionString;
+        private readonly string? _connectionString;
 
+        // 1. Constructor dùng cho Unit Test (nhận options từ bên ngoài)
+        public MyDbContext(DbContextOptions<MyDbContext> options) : base(options){}
+
+        // 2. Constructor dùng cho App chạy thật (giữ nguyên logic của bạn)
         public MyDbContext(){
             DotNetEnv.Env.Load();
             var _dbServer = Environment.GetEnvironmentVariable("DB_SERVER");
@@ -38,12 +42,13 @@ namespace entity_framework_core.Data
             // Dam bao thuc hien duoc cac thiet lap san trong lop cha cua no
             base.OnConfiguring(optionBuilder);
 
-
-            optionBuilder
-                .UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString))
-                .UseLoggerFactory(loggerFactory)
-                .EnableDetailedErrors()
-                .UseLazyLoadingProxies();
+            if (!optionBuilder.IsConfigured) { 
+                optionBuilder
+                    .UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString))
+                    .UseLoggerFactory(loggerFactory)
+                    .EnableDetailedErrors()
+                    .UseLazyLoadingProxies();
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

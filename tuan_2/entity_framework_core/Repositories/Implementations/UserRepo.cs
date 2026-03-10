@@ -15,6 +15,12 @@ namespace entity_framework_core.Repositories.Implementations
         }
 
         // ----------------------------------
+        public async Task InsertAsync(User entities)
+        {
+            await _dbContext.users.AddAsync(entities);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task InsertAsync(List<User> entities)
         {
             await _dbContext.users.AddRangeAsync(entities);
