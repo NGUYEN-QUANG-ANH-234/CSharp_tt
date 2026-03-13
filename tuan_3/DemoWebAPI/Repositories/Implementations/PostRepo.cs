@@ -1,11 +1,12 @@
 ﻿using DemoWebAPI.Data;
 using DemoWebAPI.Models.Entities;
+using DemoWebAPI.Repositories.BaseRepositories;
 using DemoWebAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace DemoWebAPI.Repositories.Implementations
 {
-    public class PostRepo : IRepository<Post>
+    public class PostRepo : IPostRepo
     {
         private readonly MyDbContext _dbContext;
 

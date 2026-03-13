@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DemoWebAPI.Models.ViewModels;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DemoWebAPI.Models.Entities
@@ -7,7 +8,7 @@ namespace DemoWebAPI.Models.Entities
     public class Comment
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [StringLength(50)]
         public required string Text { get; set; }
@@ -39,5 +40,16 @@ namespace DemoWebAPI.Models.Entities
         [Required]                                                                                                                                          
         public virtual User? User { get; set; }
         // -------------------------------
+
+        //private List<CommentVM> MapToDto(List<Comment> entities)
+        //{
+        //    return entities.Select(e => new CommentVM
+        //    {
+        //        Id = e.Id,
+        //        Text = e.Text,
+        //        UserName = e.User?.FName + " " + e.User?.LName,
+        //        Replies = e.Replies != null ? MapToDto(e.Replies) : new List<CommentVM>() // Đệ quy map các con
+        //    }).ToList();
+        //}
     }
 }

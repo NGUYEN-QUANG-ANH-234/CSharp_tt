@@ -8,7 +8,7 @@ namespace DemoWebAPI.Models.Entities
     {
         [Key]
         [Column("UserId")]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [StringLength(50)]
         public required string FName { get; set; }

@@ -1,4 +1,5 @@
 ﻿using DemoWebAPI.Data;
+using DemoWebAPI.Mappings;
 using DemoWebAPI.Repositories.BaseRepositories;
 using DemoWebAPI.Repositories.Implementations;
 using Microsoft.EntityFrameworkCore;
@@ -34,5 +35,18 @@ public static class ServiceExtensions
                    .UseLazyLoadingProxies());
 
         services.AddScoped<ICommentRepo, CommentRepo>();
+        services.AddScoped<IPostRepo, PostRepo>();
+        services.AddScoped<IUserRepo, UserRepo>();
+
+        services
+            .AddAutoMapper(typeof(CommentProfile).Assembly)
+            .AddAutoMapper(typeof(PostProfile).Assembly);
+
+        Type type = typeof(CommentProfile);
+
+        // lấy assembly chứa class
+        var assembly = type.Assembly;
+
+        Console.WriteLine("Assembly: " + assembly.FullName);
     }
 }

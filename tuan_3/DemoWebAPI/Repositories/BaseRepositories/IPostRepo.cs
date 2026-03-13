@@ -1,8 +1,13 @@
-﻿using System;
+﻿using DemoWebAPI.Models.Entities;
+using DemoWebAPI.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-public class IPostRepo
+namespace DemoWebAPI.Repositories.BaseRepositories
 {
-	public IPostRepo()
+	public interface IPostRepo : IRepository<Post>
 	{
+		
 	}
 }

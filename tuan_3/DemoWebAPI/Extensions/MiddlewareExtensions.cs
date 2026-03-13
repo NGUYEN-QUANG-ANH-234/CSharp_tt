@@ -4,8 +4,8 @@ public static class MiddlewareExtensions
     public static void UseDevTools(this WebApplication app)
     {
         // Configure the HTTP request pipeline.
-        //if (app.Environment.IsDevelopment())
-        //{
+        if (app.Environment.IsDevelopment())
+        {
             app.MapOpenApi();
 
             // Bật giao diện Swagger UI trong môi trường Development
@@ -18,6 +18,6 @@ public static class MiddlewareExtensions
         });
 
         //app.UseSwaggerUI();
-        //}
+        }
     }
 }

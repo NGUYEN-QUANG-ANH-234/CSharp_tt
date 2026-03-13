@@ -4,6 +4,7 @@ using DemoWebAPI.Repositories.BaseRepositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.JsonPatch.Internal;
 using DemoWebAPI.Models.ViewModels;
+using AutoMapper;
 
 namespace DemoWebAPI.Controllers
 {
@@ -13,9 +14,12 @@ namespace DemoWebAPI.Controllers
     {
         private readonly ICommentRepo _commentRepo;
 
-        public CommentController(ICommentRepo commentRepo)
+        private readonly IMapper _mapper;
+
+        public CommentController(ICommentRepo commentRepo, IMapper mapper)
         {
             _commentRepo = commentRepo;
+            _mapper = mapper;
         }
 
 
@@ -25,15 +29,9 @@ namespace DemoWebAPI.Controllers
         {
             if (createDto == null) return BadRequest();
 
-            var commentEntity = new Comment
-            {
-                Id = Guid.NewGuid(),
-                UserId = createDto.UserId,
-                PostId = postId,
-                Text = createDto.Text,
-                ParentCommentId = createDto.ParentCommentId,
-                CreatedAt = DateTime.UtcNow,
-            };
+            var commentEntity = _mapper.Map<Comment>(createDto);
+
+            commentEntity.PostId = postId; 
 
             await _commentRepo.InsertAsync(commentEntity);
 
@@ -47,51 +45,33 @@ namespace DemoWebAPI.Controllers
         [HttpGet("/api/posts/{postId}/comments/tree")]
         public async Task<IActionResult> GetCommentsTree(Guid postId)
         {
-            var comments = await _commentRepo.GetAllCommentsForPost_EagerLoading(postId);
+            var comments = await _commentRepo.GetAllCommentsCTE(postId);
+            var query = _mapper.Map<List<CommentTreeVM>>(comments);
 
-            var result = MapToDto(comments);
+            var result = query.Where(r => r.ParentCommentId == null).ToList();
 
             return Ok(result);
         }
+
 
         [HttpGet("/api/posts/{postId}/comments/flat")]
         public async Task<IActionResult> GetCommentsFlat(Guid postId)
         {
             var flatEntities = await _commentRepo.GetAllCommentsCTE(postId);
 
-            var result = flatEntities.Select(e => new CommentVM
-            {
-                Id = e.Id,
-                Text = e.Text,
-                UserName = e.User?.FName + " " + e.User?.LName,
-                Replies = new List<CommentVM>()
-            }).ToList();
+            var result = _mapper.Map<List<CommentFlatVM>>(flatEntities);
 
             return Ok(result);
-        }
-
-        // Helper để map dữ liệu
-        private List<CommentVM> MapToDto(List<Comment> entities)
-        {
-            return entities.Select(e => new CommentVM
-            {
-                Id = e.Id,
-                Text = e.Text,
-                UserName = e.User?.FName + " " + e.User?.LName,
-                Replies = e.Replies != null ? MapToDto(e.Replies) : new List<CommentVM>() // Đệ quy map các con
-            }).ToList();
         }
 
         // 3. Update
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateComment(Guid id, [FromBody] UpdateCommentDto updateDto)
-        {
+        {           
             var existingComment = await _commentRepo.GetByIdAsync(id);
             if (existingComment == null) return NotFound("Comment không tồn tại.");
 
-            existingComment.Text = updateDto.Text;
-            // Cập nhật thời gian chỉnh sửa nếu cần: existingComment.UpdatedAt = DateTime.UtcNow;
-
+            _mapper.Map(updateDto, existingComment);
             await _commentRepo.UpdateAsync(existingComment);
 
             return NoContent(); // Trả về 204 sau khi update thành công
