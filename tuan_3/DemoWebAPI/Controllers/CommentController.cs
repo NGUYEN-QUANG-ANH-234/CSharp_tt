@@ -46,6 +46,9 @@ namespace DemoWebAPI.Controllers
         public async Task<IActionResult> GetCommentsTree(Guid postId)
         {
             var comments = await _commentRepo.GetAllCommentsCTE(postId);
+
+            if(comments == null) return NotFound();
+
             var query = _mapper.Map<List<CommentTreeVM>>(comments);
 
             var result = query.Where(r => r.ParentCommentId == null).ToList();
@@ -59,7 +62,21 @@ namespace DemoWebAPI.Controllers
         {
             var flatEntities = await _commentRepo.GetAllCommentsCTE(postId);
 
+            if(flatEntities == null) return NotFound();
+
             var result = _mapper.Map<List<CommentFlatVM>>(flatEntities);
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("/api/posts/{postId}/user/{authorId}/comments")]
+        public async Task<IActionResult> GetComments(Guid postId, Guid authorId, [FromQuery] ReadCommentDto readDto)
+        {
+            var existingComment = await _commentRepo.GetAllCommentsByUserInPost(postId, authorId, readDto);
+            if (existingComment == null) return NotFound();
+
+            var result = _mapper.Map<List<CommentBasicVM>>(existingComment);
 
             return Ok(result);
         }

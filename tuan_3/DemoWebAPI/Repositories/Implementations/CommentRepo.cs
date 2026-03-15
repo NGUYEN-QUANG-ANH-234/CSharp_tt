@@ -1,10 +1,9 @@
 ﻿using DemoWebAPI.Data;
 using DemoWebAPI.Models.Entities;
+using DemoWebAPI.Models.DTOs;
 using DemoWebAPI.Repositories.BaseRepositories;
-using DemoWebAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Net.NetworkInformation;
-using System.Net.WebSockets;
+using System.Linq.Dynamic.Core;
 
 namespace DemoWebAPI.Repositories.Implementations
 {
@@ -17,7 +16,7 @@ namespace DemoWebAPI.Repositories.Implementations
         }
 
         //// --- IRepository ---
-        
+
         // 1. Insert
         // Insert duy nhat 1 ban du lieu
         public async Task InsertAsync(Comment entity)
@@ -94,7 +93,7 @@ namespace DemoWebAPI.Repositories.Implementations
             {
                 foreach (var data in allData)
                 {
-                    await _dbContext.Entry(data).Collection(c => c.Replies).LoadAsync();
+                    await _dbContext.Entry(data).Collection(c => c.Replies!).LoadAsync();
                     queryCount++;
                 }
             }
@@ -141,7 +140,7 @@ namespace DemoWebAPI.Repositories.Implementations
             return flatList;
         }
 
-        public async Task<List<Comment>> DeRecursion_LazyLoading(Guid postId) 
+        public async Task<List<Comment>> DeRecursion_LazyLoading(Guid postId)
         {
             var result = new List<Comment>();
             var process_Stack = new Stack<Comment>();
@@ -150,27 +149,27 @@ namespace DemoWebAPI.Repositories.Implementations
 
             var queryAllParentsCmtInPost = await _dbContext.comments.Where(c => c.PostId == postId && c.ParentCommentId == null).ToListAsync();
 
-            foreach (var parentCmt in queryAllParentsCmtInPost) { 
+            foreach (var parentCmt in queryAllParentsCmtInPost) {
                 process_Stack.Push(parentCmt);
             }
 
-            while (process_Stack.Count > 0) 
-            { 
+            while (process_Stack.Count > 0)
+            {
                 current = process_Stack.Pop();
                 result.Add(current);
-                if (current.Replies != null) 
+                if (current.Replies != null)
                 {
-                    foreach (var reply in current.Replies) 
+                    foreach (var reply in current.Replies)
                     {
                         process_Stack.Push(reply);
                     }
                 }
-            
+
             }
             return result;
         }
 
-        public async Task<List<Comment>> DeRecursion_EagerLoading(Guid postId) 
+        public async Task<List<Comment>> DeRecursion_EagerLoading(Guid postId)
         {
             var queryAllCmtInPost = await _dbContext.comments.Where(c => c.PostId == postId).ToListAsync();
             var queryAllParentCmt = queryAllCmtInPost.Where(c => c.ParentCommentId == null).ToList();
@@ -180,28 +179,62 @@ namespace DemoWebAPI.Repositories.Implementations
 
             Comment current;
 
-            foreach (var child in queryAllParentCmt) 
+            foreach (var parentCmt in queryAllParentCmt)
             {
-                process_Stack.Push(child);
+                process_Stack.Push(parentCmt);
             }
 
-            while (process_Stack.Count > 0) 
+            while (process_Stack.Count > 0)
             {
                 current = process_Stack.Pop();
                 result.Add(current);
 
                 var queryChildCmt = queryAllCmtInPost.Where(c => c.ParentCommentId == current.Id).ToList();
 
-                if (queryChildCmt.Count != 0) 
+                if (queryChildCmt.Count != 0)
                 {
-                    foreach (var childCmt in queryChildCmt) 
-                    { 
+                    foreach (var childCmt in queryChildCmt)
+                    {
                         process_Stack.Push(childCmt);
                     }
                 }
             }
 
-            return result;            
+            return result;
+        }
+
+
+        public async Task<List<Comment>> GetAllCommentsByUserInPost(Guid PostId, Guid authorId, ReadCommentDto readDto)
+        {
+            var limitPageSize = 20;
+            var defaultPageSize = 10;
+
+            var query = _dbContext.comments.AsNoTracking().AsQueryable().Where(c => c.UserId == authorId && c.PostId == PostId);
+
+            // Filtering -> Sorting -> Pagination
+            if (readDto.Text != null)
+            {
+                string textString = readDto.Text;
+                query = _dbContext.comments.Where(c => c.Text.Contains(textString));
+            }
+
+            if (readDto.SortBy != null)
+            {
+                string sortString = readDto.SortBy + (readDto.IsDescending == true ? "descending" : "ascending");
+                query = query.OrderBy(sortString);
+            }
+            else 
+            {
+                query = query.OrderByDescending(c => c.CreatedAt);
+            }
+
+            var currentPage = readDto.page < 1 ? 1 : readDto.page;
+
+            var pageSize = (readDto.pageSize < 1 && readDto.pageSize > limitPageSize) ? defaultPageSize : readDto.pageSize;
+
+            query = query.Skip((currentPage - 1) * pageSize).Take(pageSize);
+
+            return await query.ToListAsync();
         }
     }
 }

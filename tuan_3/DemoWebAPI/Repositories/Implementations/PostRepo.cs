@@ -1,8 +1,11 @@
 ﻿using DemoWebAPI.Data;
+using DemoWebAPI.Models.DTOs;
 using DemoWebAPI.Models.Entities;
 using DemoWebAPI.Repositories.BaseRepositories;
 using DemoWebAPI.Repositories.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core; 
 
 namespace DemoWebAPI.Repositories.Implementations
 {
@@ -53,10 +56,43 @@ namespace DemoWebAPI.Repositories.Implementations
             await _dbContext.SaveChangesAsync();
         }
 
-
         public async Task DeleteAsync(Guid id)
         {
             await _dbContext.posts.Where(p => p.Id == id).ExecuteDeleteAsync();
+        }
+
+        public async Task<List<Post>> GetPostsByAuthorId(Guid authorId, ReadPostDto readDto)
+        {
+            const int limitPageSize = 20;
+            const int defaultPageSize = 10;
+
+            var query = _dbContext.posts.AsNoTracking().AsQueryable().Where(p => p.UserId == authorId);
+
+            // Kiem tra co can truy van
+            if (!string.IsNullOrEmpty(readDto.Title))
+            {
+                var titleString = readDto.Title;
+                query = query.Where(p => p.Title.Contains(titleString));
+            }
+
+            // Kiem tra co can Sort du lieu
+            if (!string.IsNullOrEmpty(readDto.SortBy))
+            {
+                var sortString = readDto.SortBy + (readDto.IsDescending == true ? " descending" : " ascending");
+                query = query.OrderBy(sortString);
+                //query = query.OrderBy(readDto.SortBy);
+            }
+            else
+            {
+                query = query.OrderByDescending(p => p.CreatedAt);
+            }
+
+            var currentPage = readDto.page < 1 ? 1 : readDto.page;
+            var pageSize = (readDto.pageSize > limitPageSize || readDto.pageSize < 1) ? defaultPageSize : readDto.pageSize;
+
+
+            query = query.Skip((currentPage - 1) * pageSize).Take(pageSize);
+            return await query.ToListAsync();
         }
     }
 }

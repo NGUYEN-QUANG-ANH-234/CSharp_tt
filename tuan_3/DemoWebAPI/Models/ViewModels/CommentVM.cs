@@ -15,8 +15,7 @@ namespace DemoWebAPI.Models.ViewModels
 
         // Thông tin phân cấp
         public Guid? ParentCommentId { get; set; }
-        public int ReplyCount { get; set; }
-        
+        public int ReplyCount { get; set; }        
     }
 
     public class CommentTreeVM : CommentBasicVM

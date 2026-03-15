@@ -9,19 +9,15 @@ namespace DemoWebAPI.Models.Entities
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-
         [StringLength(50)]
         public required string Text { get; set; }
-
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         // Self-Reference
 
         [ForeignKey("ParentCommentId")]
-        public Guid? ParentCommentId { get; set; }
-        
+        public Guid? ParentCommentId { get; set; }        
         public virtual Comment? ParentComment { get; set; }
-
         public virtual List<Comment>? Replies { get; set; } = new List<Comment>();
 
 
@@ -39,17 +35,5 @@ namespace DemoWebAPI.Models.Entities
         [ForeignKey("UserId")]
         [Required]                                                                                                                                          
         public virtual User? User { get; set; }
-        // -------------------------------
-
-        //private List<CommentVM> MapToDto(List<Comment> entities)
-        //{
-        //    return entities.Select(e => new CommentVM
-        //    {
-        //        Id = e.Id,
-        //        Text = e.Text,
-        //        UserName = e.User?.FName + " " + e.User?.LName,
-        //        Replies = e.Replies != null ? MapToDto(e.Replies) : new List<CommentVM>() // Đệ quy map các con
-        //    }).ToList();
-        //}
     }
 }

@@ -20,7 +20,7 @@ namespace DemoWebAPI.Controllers {
         {
             _postRepo = postRepo;
             _mapper = mapper;
-        }
+        }        
 
         // 1. Create
         [HttpPost("/api/posts")]
@@ -43,6 +43,17 @@ namespace DemoWebAPI.Controllers {
             if (post == null) return BadRequest();
 
             var result = _mapper.Map<PostBasicVM>(post);
+
+            return Ok(result);
+        }
+
+        [HttpGet("/api/user/{authorId}/posts")]
+        public async Task<IActionResult> GetPosts(Guid authorId, [FromQuery] ReadPostDto postDto)
+        {
+            var posts = await _postRepo.GetPostsByAuthorId(authorId, postDto);
+            if (posts == null) return NotFound();
+
+            var result = _mapper.Map<List<PostBasicVM>>(posts);
 
             return Ok(result);
         }
