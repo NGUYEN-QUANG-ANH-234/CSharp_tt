@@ -1,5 +1,4 @@
-using DemoWebAPI.Data;
-using DemoWebAPI.Extensions;
+using DemoWebAPI.WebAPI.Extensions;
 using System.Text;
 
 namespace DemoWebAPI
