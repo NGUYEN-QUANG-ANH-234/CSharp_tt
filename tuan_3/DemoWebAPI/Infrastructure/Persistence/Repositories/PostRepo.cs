@@ -60,7 +60,7 @@ namespace DemoWebAPI.Infrastructure.Persistence.Implementations
             await _dbContext.posts.Where(p => p.Id == id).ExecuteDeleteAsync();
         }
 
-        public async Task<List<Post>> GetPostsByAuthorId(Guid authorId, ReadPostDto readDto)
+        public async Task<List<Post>> GetPostsByAuthorId(Guid authorId, int page, int pageSize, string? sortBy, string? title, bool? isDescending)
         {
             const int limitPageSize = 20;
             const int defaultPageSize = 10;
@@ -68,16 +68,16 @@ namespace DemoWebAPI.Infrastructure.Persistence.Implementations
             var query = _dbContext.posts.AsNoTracking().AsQueryable().Where(p => p.UserId == authorId);
 
             // Kiem tra co can Loc du lieu theo Title cua Post
-            if (!string.IsNullOrEmpty(readDto.Title))
+            if (!string.IsNullOrEmpty(title))
             {
-                var titleString = readDto.Title;
+                var titleString = title;
                 query = query.Where(p => p.Title.Contains(titleString));
             }
 
             // Kiem tra co can Sort du lieu
-            if (!string.IsNullOrEmpty(readDto.SortBy))
+            if (!string.IsNullOrEmpty(sortBy))
             {
-                var sortString = readDto.SortBy + (readDto.IsDescending == true ? " descending" : " ascending");
+                var sortString = sortBy + (isDescending == true ? " descending" : " ascending");
                 query = query.OrderBy(sortString);
             }
             else
@@ -85,11 +85,11 @@ namespace DemoWebAPI.Infrastructure.Persistence.Implementations
                 query = query.OrderByDescending(p => p.CreatedAt);
             }
 
-            var currentPage = readDto.page < 1 ? 1 : readDto.page;
-            var pageSize = (readDto.pageSize > limitPageSize || readDto.pageSize < 1) ? defaultPageSize : readDto.pageSize;
+            var currentPage = page < 1 ? 1 : page;
+            var size = (pageSize > limitPageSize || pageSize < 1) ? defaultPageSize : pageSize;
 
 
-            query = query.Skip((currentPage - 1) * pageSize).Take(pageSize);
+            query = query.Skip((currentPage - 1) * size).Take(size);
             return await query.ToListAsync();
         }
     }

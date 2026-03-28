@@ -17,7 +17,7 @@ public static class MiddlewareExtensions
             options.RoutePrefix = "swagger"; // Đường dẫn sẽ là localhost:PORT/swagger
         });
 
-        //app.UseSwaggerUI();
+            Console.WriteLine("--- Swagger UI is enabled at /swagger ---");
         }
     }
 }

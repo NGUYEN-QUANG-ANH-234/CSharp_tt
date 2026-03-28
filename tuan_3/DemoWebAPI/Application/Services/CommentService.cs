@@ -3,8 +3,12 @@ using DemoWebAPI.Application.DTOs;
 using DemoWebAPI.Application.Interfaces;
 using DemoWebAPI.Core.Entities;
 using DemoWebAPI.Core.Interfaces;
+using DemoWebAPI.Infrastructure.Data;
 using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Globalization;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DemoWebAPI.Application.Services
 {
@@ -45,11 +49,11 @@ namespace DemoWebAPI.Application.Services
 
             // Kiem tra cache
             var cacheData = await _cache.GetAsync<List<CommentTreeVM>>(cacheKey);
-            if (cacheData != null) return cacheData;
+            if (cacheData is not null) return cacheData;
 
             // Chua co cache
             var comments = await _commentRepo.GetAllCommentsCTE(postId);
-            if (comments == null) return new List<CommentTreeVM>();
+            if (comments is null) return new List<CommentTreeVM>();
 
             // Mapping
             var allNodes = _mapper.Map<List<CommentTreeVM>>(comments);
@@ -67,11 +71,11 @@ namespace DemoWebAPI.Application.Services
             var cacheData = await _cache.GetAsync<List<CommentTreeVM>>(cacheKey);
 
             // Kiem tra cache
-            if (cacheData != null) return cacheData;
+            if (cacheData is not null) return cacheData;
 
             // Chua co cache
             var comments = await _commentRepo.GetAllCommentsCTE(postId);
-            if (comments == null) return new List<CommentTreeVM>();
+            if (comments is null) return new List<CommentTreeVM>();
 
             // Mapping
             var allNodes = _mapper.Map<List<CommentTreeVM>>(comments);
@@ -90,11 +94,11 @@ namespace DemoWebAPI.Application.Services
             var cacheData = await _cache.GetAsync<List<CommentFlatVM>>(cacheKey);
 
             // Kiem tra cache
-            if (cacheData != null) return cacheData;
+            if (cacheData is not null) return cacheData;
 
             // Thuc hien lay comment
             var comments = await _commentRepo.GetAllCommentsCTE(postId);
-            if (comments == null) return new List<CommentFlatVM>();
+            if (comments is null) return new List<CommentFlatVM>();
 
             // Mapping du lieu dau ra
             var flatList = _mapper.Map<List<CommentFlatVM>>(comments).ToList();
@@ -111,11 +115,12 @@ namespace DemoWebAPI.Application.Services
             var cacheData = await _cache.GetAsync<List<CommentBasicVM>>(cacheKey);
 
             // Kiem tra cache
-            if (cacheData != null) return cacheData;
+            if (cacheData is not null) return cacheData;
 
             // Thuc hien tim du lieu
-            var comments = _commentRepo.GetAllCommentsByUserInPost(postId, authorId, readDto);
-            if (comments == null) return new List<CommentBasicVM>();
+            var comments = _commentRepo.GetAllCommentsByUserInPost(postId, authorId, readDto.Page, readDto.PageSize, readDto?.SortBy, readDto?.Text, readDto?.IsDescending);
+
+            if (comments is null) return new List<CommentBasicVM>();
 
             // Mapping du lieu tra ve
             var commentsByPost = _mapper.Map<List<CommentBasicVM>>(comments);
@@ -129,7 +134,7 @@ namespace DemoWebAPI.Application.Services
         public async Task<bool> UpdateCommentAsync(Guid id, UpdateCommentDto updateDto) 
         { 
             var existingComment = await _commentRepo.GetByIdAsync(id);
-            if (existingComment == null) return false;
+            if (existingComment is null) return false;
             
             _mapper.Map(updateDto, existingComment);
             await _commentRepo.UpdateAsync(existingComment);
@@ -142,7 +147,7 @@ namespace DemoWebAPI.Application.Services
         public async Task<bool> DeleteCommentAsync(Guid id) 
         {
             var existingComment = await _commentRepo.GetByIdAsync(id);
-            if (existingComment == null) return false;
+            if (existingComment is null) return false;
 
             await _commentRepo.DeleteAsync(id);
 
@@ -150,14 +155,22 @@ namespace DemoWebAPI.Application.Services
             return true;
         }
 
-        Task<CommentBasicVM> ICommentService.GetCommentsTreeLoopAsync(Guid postId)
+        public async Task<List<Comment>> GetCommentTreeLoopAsync(Guid postId)
         {
-            throw new NotImplementedException();
-        }
+            string cacheKey = $"comments_tree_loop_{postId}";
+            var cacheData = await _cache.GetAsync<List<Comment>>(cacheKey);
 
-        Task<CommentBasicVM> ICommentService.GetCommentsByPostAsync(Guid postId, Guid authorId, ReadCommentDto readDto)
-        {
-            throw new NotImplementedException();
+            if (cacheData is not null) return cacheData;
+
+            var comments = await _commentRepo.GetAllCommentsCTE(postId);
+
+            if (comments is null) return new List<Comment>();
+
+            var loopCommentTree = _mapper.Map<List<Comment>>(comments);
+            await _cache.SetAsync(cacheKey, loopCommentTree, TimeSpan.FromMinutes(15));
+
+            return loopCommentTree;
+
         }
     }
 }

@@ -47,7 +47,8 @@ namespace DemoWebAPI.WebAPI.Controllers {
         [HttpGet("/api/user/{authorId}/posts")]
         public async Task<IActionResult> GetPosts(Guid authorId, [FromQuery] ReadPostDto postDto)
         {
-            var posts = await _postRepo.GetPostsByAuthorId(authorId, postDto);
+            var posts = await _postRepo.GetPostsByAuthorId(authorId, postDto.Page, postDto.PageSize, postDto.SortBy, postDto.Title, postDto.IsDescending);
+            // int page, int pageSize, string? sortBy, string? title, bool? isDescending)
             if (posts == null) return NotFound();
 
             var result = _mapper.Map<List<PostBasicVM>>(posts);

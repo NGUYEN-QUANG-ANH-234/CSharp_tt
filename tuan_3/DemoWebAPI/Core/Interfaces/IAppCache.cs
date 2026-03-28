@@ -1,9 +1,11 @@
-﻿namespace DemoWebAPI.Core.Interfaces
+﻿using Microsoft.Extensions.Caching.Distributed;
+
+namespace DemoWebAPI.Core.Interfaces
 {
     public interface IAppCache
     {
         Task<T?> GetAsync<T>(string key);
-        Task SetAsync<T>(string key, T data, TimeSpan? expiration = null);
+        Task SetAsync<T>(string key, T data, TimeSpan? absoluteExpireTime = null, TimeSpan? unusedExpireTime = null);
         Task RemoveAsync(string key);
     }
 }

@@ -1,0 +1,46 @@
+[16:05:11 INF] [] Starting Web Host...
+[16:07:34 INF] [] Starting Web Host...
+[16:08:06 WRN] [Microsoft.EntityFrameworkCore.Model.Validation] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+[16:08:06 INF] [] info: 3/27/2026 16:08:06.680 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (48ms) [Parameters=[p0='08de7923-12ef-43e4-85cb-8a2b9fa53537', p1='08de7923-12ef-43e4-85cb-8a2b9fa53537'], CommandType='Text', CommandTimeout='30']
+      SELECT `d`.`Id`, `d`.`CreatedAt`, `d`.`ParentCommentId`, `d`.`PostId`, `d`.`Text`, `d`.`UserId`, `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM (
+      
+                          WITH RECURSIVE CommentTree AS (
+                          SELECT * FROM comments 
+                          WHERE PostId = @p0 AND ParentCommentId IS NULL
+                          UNION ALL
+                          SELECT c.* FROM comments c 
+                          INNER JOIN CommentTree ct ON c.ParentCommentId = ct.Id
+                          WHERE c.PostId = @p1
+                          )
+                          SELECT * FROM CommentTree
+      ) AS `d`
+      INNER JOIN `users` AS `u` ON `d`.`UserId` = `u`.`UserId`
+[16:08:06 INF] [] info: 3/27/2026 16:08:06.778 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='04a53387-1ef1-44eb-8382-127cc6ca6b2d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[16:08:06 INF] [] info: 3/27/2026 16:08:06.787 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-1823-4536-8f49-0134325fe94f' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[16:08:06 INF] [] info: 3/27/2026 16:08:06.789 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b50cf51a-54d6-49a7-b317-3450ac5ad5f8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[16:08:06 INF] [] info: 3/27/2026 16:08:06.791 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='a444708b-1ee4-420d-aca6-279369858d2b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[16:08:06 INF] [] info: 3/27/2026 16:08:06.793 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f04fa54a-d995-4fc9-8533-5236830bdf47' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[16:08:06 WRN] [PerformanceMiddleware] API GET /api/posts/08de7923-12ef-43e4-85cb-8a2b9fa53537/comments/flatten chạy chậm: 3624ms
+[16:08:40 INF] [PerformanceMiddleware] API /api/posts/08de7923-12ef-43e4-85cb-8a2b9fa53537/comments/flatten hoàn thành trong 16ms

@@ -14,11 +14,12 @@ public class RedisAppCache : IAppCache
         return jsonData is null ? default : JsonSerializer.Deserialize<T>(jsonData);
     }
 
-    public async Task SetAsync<T>(string key, T data, TimeSpan? expiration = null)
+    public async Task SetAsync<T>(string key, T data, TimeSpan? absoluteExpireTime = null, TimeSpan? unusedExpireTime = null)
     {
         var options = new DistributedCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromMinutes(60)
+            AbsoluteExpirationRelativeToNow = absoluteExpireTime ?? TimeSpan.FromMinutes(60),
+            SlidingExpiration = unusedExpireTime 
         };
         var jsonData = JsonSerializer.Serialize(data);
         await _cache.SetStringAsync(key, jsonData, options);

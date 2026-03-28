@@ -43,7 +43,7 @@ namespace DemoWebAPI.WebAPI.Controllers
         }
 
         // 3. Read (Danh sách phẳng)
-        [HttpGet("/api/posts/{postId}/comments/flat")]
+        [HttpGet("/api/posts/{postId}/comments/flatten")]
         public async Task<IActionResult> GetCommentsFlat(Guid postId)
         {
             var result = await _commentService.GetCommentsFlatAsync(postId);
@@ -54,7 +54,7 @@ namespace DemoWebAPI.WebAPI.Controllers
         [HttpGet("/api/posts/{postId}/comments/tree_loop")]
         public async Task<IActionResult> GetCommentsTreeLoop(Guid postId)
         {
-            var result = await _commentService.GetCommentsTreeLoopAsync(postId);            
+            var result = await _commentService.GetCommentTreeLoopAsync(postId);            
             return Ok(result);
         }
 

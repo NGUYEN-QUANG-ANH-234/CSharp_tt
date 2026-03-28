@@ -27,7 +27,6 @@ namespace DemoWebAPI.Application.Mappings
             CreateMap<Comment, CommentFlatVM>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User != null ? $"{src.User.FName} {src.User.LName}" : string.Empty))
                 .ForMember(dest => dest.ReplyCount, opt => opt.MapFrom(src => src.Replies != null ? src.Replies.Count : 0));
-
         }
     }
 }

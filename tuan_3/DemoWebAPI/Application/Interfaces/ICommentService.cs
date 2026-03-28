@@ -1,4 +1,5 @@
 ﻿using DemoWebAPI.Application.DTOs;
+using DemoWebAPI.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoWebAPI.Application.Interfaces
@@ -11,11 +12,12 @@ namespace DemoWebAPI.Application.Interfaces
         // 2.Read
         Task<List<CommentTreeVM>> GetCommentTreeAsync(Guid postId);
 
-        Task<CommentBasicVM> GetCommentsTreeLoopAsync(Guid postId);
+        Task<List<Comment>> GetCommentTreeLoopAsync(Guid postId);
 
         Task<List<CommentFlatVM>> GetCommentsFlatAsync(Guid postId);
 
-        Task<CommentBasicVM> GetCommentsByPostAsync(Guid postId, Guid authorId, ReadCommentDto readDto);
+        Task<List<CommentBasicVM>> GetCommentsByPostAsync(Guid postId, Guid authorId, ReadCommentDto readDto);
+
 
         // 3.Update
         Task<bool> UpdateCommentAsync(Guid id, UpdateCommentDto updateDto);
@@ -23,5 +25,7 @@ namespace DemoWebAPI.Application.Interfaces
         // 4.Delete
         Task<bool> DeleteCommentAsync(Guid id);
         // Thêm các phương thức khác như Create, Update, Delete nếu muốn đưa hết vào Service
+
+
     }
 }
