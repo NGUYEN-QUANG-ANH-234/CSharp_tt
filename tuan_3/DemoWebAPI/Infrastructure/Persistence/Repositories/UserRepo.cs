@@ -30,10 +30,17 @@ namespace DemoWebAPI.Infrastructure.Persistence.Implementations
             await _dbContext.SaveChangesAsync();
         }
 
+        //public async Task<User?> GetByIdAsync(Guid id)
+        //{
+        //    var getByIdUser = await _dbContext.users.FindAsync(id);
+        //    return getByIdUser;
+        //}
+
         public async Task<User?> GetByIdAsync(Guid id)
         {
-            var getByIdUser = await _dbContext.users.FindAsync(id);
-            return getByIdUser;
+            return await _dbContext.users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<List<User>> GetAllAsync()

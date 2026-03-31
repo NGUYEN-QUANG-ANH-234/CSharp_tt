@@ -18,14 +18,14 @@ namespace DemoWebAPI.Application.Services
         private readonly IAppCache _cache;
         private readonly IMapper _mapper;
 
-        public CommentService(ICommentRepo commentRepo, IAppCache cache, IMapper mapper) 
+        public CommentService(ICommentRepo commentRepo, IAppCache cache, IMapper mapper)
         {
             _commentRepo = commentRepo;
             _cache = cache;
-            _mapper = mapper;        
+            _mapper = mapper;
         }
 
-        public async Task<CommentBasicVM> CreateCommentAsync(Guid postId, CreateCommentDto createDto) 
+        public async Task<CommentBasicVM> CreateCommentAsync(Guid postId, CreateCommentDto createDto)
         {
             // Mapping du lieu dau vao
             var commentEntity = _mapper.Map<Comment>(createDto);
@@ -42,29 +42,6 @@ namespace DemoWebAPI.Application.Services
         }
 
         // 2.Read
-
-
-        public async Task<List<CommentTreeVM>> GetCommentsTreeLoopAsync(Guid postId) {
-            string cacheKey = $"comment_tree_loop_{postId}";
-
-            // Kiem tra cache
-            var cacheData = await _cache.GetAsync<List<CommentTreeVM>>(cacheKey);
-            if (cacheData is not null) return cacheData;
-
-            // Chua co cache
-            var comments = await _commentRepo.GetAllCommentsCTE(postId);
-            if (comments is null) return new List<CommentTreeVM>();
-
-            // Mapping
-            var allNodes = _mapper.Map<List<CommentTreeVM>>(comments);
-            var tree = allNodes.Where(x => x.ParentCommentId == null).ToList();
-
-            // Setup thoi gian luu cache
-            await _cache.SetAsync(cacheKey, tree, TimeSpan.FromMinutes(15));
-
-            return tree;
-        }
-
         public async Task<List<CommentTreeVM>> GetCommentTreeAsync(Guid postId)
         {
             string cacheKey = $"comment_tree_{postId}";
@@ -77,9 +54,15 @@ namespace DemoWebAPI.Application.Services
             var comments = await _commentRepo.GetAllCommentsCTE(postId);
             if (comments is null) return new List<CommentTreeVM>();
 
-            // Mapping
+            // Mapping 
+            // Thuộc tính điều hướng User ở trạng thái tạo rỗng
             var allNodes = _mapper.Map<List<CommentTreeVM>>(comments);
-            var tree = allNodes.Where(x => x.ParentCommentId == null).ToList();
+
+            // Do cơ chế tự detect quan hệ của EF nên sẽ tự động thực hiện load mối quan hệ và lấp đầy thuộc tính con User
+            //var tree = allNodes.Where(x => x.ParentCommentId == null).ToList();
+
+            // Chủ động xây dựng comment tree từ khối comment truy vấn trả về
+            var tree = BuildTree(allNodes);
 
             // Lưu vào Redis Cache trong 15 phút
             await _cache.SetAsync(cacheKey, tree, TimeSpan.FromMinutes(15));
@@ -109,7 +92,7 @@ namespace DemoWebAPI.Application.Services
             return flatList;
         }
 
-        public async Task<List<CommentBasicVM>> GetCommentsByPostAsync(Guid postId, Guid authorId, ReadCommentDto readDto) 
+        public async Task<List<CommentBasicVM>> GetCommentsByPostAsync(Guid postId, Guid authorId, ReadCommentDto readDto)
         {
             string cacheKey = $"comments_post_{postId}_author_{authorId}";
             var cacheData = await _cache.GetAsync<List<CommentBasicVM>>(cacheKey);
@@ -131,11 +114,11 @@ namespace DemoWebAPI.Application.Services
         }
 
         // 3.Update
-        public async Task<bool> UpdateCommentAsync(Guid id, UpdateCommentDto updateDto) 
-        { 
+        public async Task<bool> UpdateCommentAsync(Guid id, UpdateCommentDto updateDto)
+        {
             var existingComment = await _commentRepo.GetByIdAsync(id);
             if (existingComment is null) return false;
-            
+
             _mapper.Map(updateDto, existingComment);
             await _commentRepo.UpdateAsync(existingComment);
 
@@ -144,7 +127,7 @@ namespace DemoWebAPI.Application.Services
         }
 
         // 4.Delete
-        public async Task<bool> DeleteCommentAsync(Guid id) 
+        public async Task<bool> DeleteCommentAsync(Guid id)
         {
             var existingComment = await _commentRepo.GetByIdAsync(id);
             if (existingComment is null) return false;
@@ -170,7 +153,31 @@ namespace DemoWebAPI.Application.Services
             await _cache.SetAsync(cacheKey, loopCommentTree, TimeSpan.FromMinutes(15));
 
             return loopCommentTree;
+        }
 
+        // Hàm bổ trợ dựng comment tree
+        private List<CommentTreeVM> BuildTree(List<CommentTreeVM> allNodes)
+        {
+            // Tạo Dictionary để tìm kiếm nhanh theo Id
+            var dic = allNodes.ToDictionary(n => n.Id);
+            var rootNodes = new List<CommentTreeVM>();
+
+            foreach (var node in allNodes)
+            {
+                if (node.ParentCommentId == null || !dic.ContainsKey(node.ParentCommentId.Value))
+                {
+                    // Nếu không có cha -> nó là gốc
+                    rootNodes.Add(node);
+                }
+                else
+                {
+                    // Nếu có cha -> tìm cha trong Dictionary và add vào danh sách Children
+                    var parent = dic[node.ParentCommentId.Value];
+                    if (parent.Replies== null) parent.Replies = new List<CommentTreeVM>();
+                    parent.Replies.Add(node);
+                }
+            }
+            return rootNodes;
         }
     }
 }

@@ -33,7 +33,8 @@
         public string UserName { get; set; } = string.Empty;
 
         // Thông tin phân cấp
-        public Guid? ParentCommentId { get; set; }
+        // Quan trọng để FE biết cấp bậc nếu cần
+        public Guid? ParentCommentId { get; set; } 
         public int ReplyCount { get; set; }
     }
 
@@ -42,13 +43,7 @@
         public List<CommentTreeVM> Replies { get; set; } = new List<CommentTreeVM>();
     }
 
-    public class CommentFlatVM
+    public class CommentFlatVM : CommentBasicVM
     {
-        public Guid Id { get; set; }
-        public string Text { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; }
-        public string UserName { get; set; } = string.Empty;
-        public Guid? ParentCommentId { get; set; } // Quan trọng để FE biết cấp bậc nếu cần
-        public int ReplyCount { get; set; }
     }
 }

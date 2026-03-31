@@ -1,0 +1,854 @@
+[00:20:25 INF] [] Starting Web Host...
+[00:22:12 INF] [] Starting Web Host...
+[00:22:28 WRN] [Microsoft.EntityFrameworkCore.Model.Validation] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+[00:22:28 INF] [] info: 3/29/2026 00:22:28.865 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (40ms) [Parameters=[p0='08de7923-12ef-4220-8463-6442279d9ad5', p1='08de7923-12ef-4220-8463-6442279d9ad5'], CommandType='Text', CommandTimeout='30']
+      SELECT `d`.`Id`, `d`.`CreatedAt`, `d`.`ParentCommentId`, `d`.`PostId`, `d`.`Text`, `d`.`UserId`, `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM (
+      
+                      WITH RECURSIVE CommentTree AS (
+                      SELECT * FROM comments 
+                      WHERE PostId = @p0 AND ParentCommentId IS NULL
+                      UNION ALL
+                      SELECT c.* FROM comments c 
+                      INNER JOIN CommentTree ct ON c.ParentCommentId = ct.Id
+                      WHERE c.PostId = @p1
+                      )
+                      SELECT * FROM CommentTree
+      ) AS `d`
+      INNER JOIN `users` AS `u` ON `d`.`UserId` = `u`.`UserId`
+[00:22:28 INF] [] info: 3/29/2026 00:22:28.974 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='08de7923-183a-4d6f-8ce5-ac5e1edb98f9' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:22:28 INF] [] info: 3/29/2026 00:22:28.986 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='3fc16ee4-1a7c-4884-be5b-a40764f34887' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:22:28 INF] [] info: 3/29/2026 00:22:28.994 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b27ec9c9-9d26-402d-99bc-caf4204b85e4' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.004 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-117e-4dbf-8b46-4e6c97f59612' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.010 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='e5d82977-4554-4131-b5f0-34407e2fbcd4' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.013 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='2cc51472-a314-4c03-8fb4-2503ccfcf79c' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.015 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-0f58-44a2-859d-e85991a32a07' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.016 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-1134-48f1-8136-5d603e21f4d4' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.018 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='77c550a6-c1db-494e-bfe3-fb4c6b5cc406' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.019 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b27ec9c9-9d26-402d-99bc-caf4204b85e4' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.021 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='e5d82977-4554-4131-b5f0-34407e2fbcd4' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.024 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='2cc51472-a314-4c03-8fb4-2503ccfcf79c' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.026 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-0f58-44a2-859d-e85991a32a07' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:22:29 INF] [] info: 3/29/2026 00:22:29.028 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='2cc51472-a314-4c03-8fb4-2503ccfcf79c' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:24:17 WRN] [PerformanceMiddleware] API GET /api/posts/08de7923-12ef-4220-8463-6442279d9ad5/comments/tree chạy chậm: 113022ms
+[00:24:42 INF] [PerformanceMiddleware] API /api/posts/08de7923-12ef-4220-8463-6442279d9ad5/comments/tree hoàn thành trong 16ms
+[00:27:56 INF] [] Starting Web Host...
+[00:28:29 WRN] [PerformanceMiddleware] API GET /api/posts/08de7923-12ef-4220-8463-6442279d9ad5/comments/tree chạy chậm: 2567ms
+[00:29:17 INF] [] Starting Web Host...
+[00:29:28 INF] [] Starting Web Host...
+[00:29:38 WRN] [PerformanceMiddleware] API GET /api/posts/08de7923-12ef-4220-8463-6442279d9ad5/comments/tree chạy chậm: 2559ms
+[00:30:06 WRN] [Microsoft.EntityFrameworkCore.Model.Validation] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+[00:30:07 INF] [] info: 3/29/2026 00:30:07.256 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (56ms) [Parameters=[p0='08de7923-12ef-423d-8851-50623ed48d9a', p1='08de7923-12ef-423d-8851-50623ed48d9a'], CommandType='Text', CommandTimeout='30']
+      SELECT `d`.`Id`, `d`.`CreatedAt`, `d`.`ParentCommentId`, `d`.`PostId`, `d`.`Text`, `d`.`UserId`, `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM (
+      
+                      WITH RECURSIVE CommentTree AS (
+                      SELECT * FROM comments 
+                      WHERE PostId = @p0 AND ParentCommentId IS NULL
+                      UNION ALL
+                      SELECT c.* FROM comments c 
+                      INNER JOIN CommentTree ct ON c.ParentCommentId = ct.Id
+                      WHERE c.PostId = @p1
+                      )
+                      SELECT * FROM CommentTree
+      ) AS `d`
+      INNER JOIN `users` AS `u` ON `d`.`UserId` = `u`.`UserId`
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.179 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (2ms) [Parameters=[@__p_0='b2ef2e71-3711-4c0d-a06e-dc85eacf5dda' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.196 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='9d739bff-4986-41c8-af40-46c2a7335173' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.202 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b1c40435-06cf-4f55-8ab5-14d2246ec4e8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.205 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.221 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (2ms) [Parameters=[@__p_0='08de7923-115c-494f-8495-b943c35aec90' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.232 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (4ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.238 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.241 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.243 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-a009-498f-85b1-554079b0caee' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.245 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-9e3b-4995-825a-3a26468ab8c6' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.248 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-1245-4a20-8f71-790c674d9904' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.249 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='bfb03953-0a45-4d41-8396-3a4082535235' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.251 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f19a0c5a-f7bb-45ec-bf35-590d42583da0' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.253 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-ee8c-432f-8b74-a66d1028e320' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.254 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-eea9-4683-86f0-47563475bc06' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.256 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='9d739bff-4986-41c8-af40-46c2a7335173' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.259 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (2ms) [Parameters=[@__p_0='b1c40435-06cf-4f55-8ab5-14d2246ec4e8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.262 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.264 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-115c-494f-8495-b943c35aec90' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.266 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.268 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.269 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.271 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-a009-498f-85b1-554079b0caee' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.273 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-9e3b-4995-825a-3a26468ab8c6' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.276 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='bfb03953-0a45-4d41-8396-3a4082535235' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.277 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f19a0c5a-f7bb-45ec-bf35-590d42583da0' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.279 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-ee8c-432f-8b74-a66d1028e320' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.281 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b1c40435-06cf-4f55-8ab5-14d2246ec4e8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.283 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.285 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-115c-494f-8495-b943c35aec90' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.287 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.288 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.290 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.292 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-a009-498f-85b1-554079b0caee' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.294 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f19a0c5a-f7bb-45ec-bf35-590d42583da0' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.296 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.298 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.299 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.301 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[00:30:51 INF] [] info: 3/29/2026 00:30:51.303 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[00:30:51 WRN] [PerformanceMiddleware] API GET /api/posts/08de7923-12ef-423d-8851-50623ed48d9a/comments/tree chạy chậm: 44985ms
+[01:10:22 INF] [] Starting Web Host...
+[01:10:44 WRN] [Microsoft.EntityFrameworkCore.Model.Validation] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+[01:10:45 INF] [] info: 3/29/2026 01:10:45.650 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (55ms) [Parameters=[p0='08de7923-12ef-423d-8851-50623ed48d9a', p1='08de7923-12ef-423d-8851-50623ed48d9a'], CommandType='Text', CommandTimeout='30']
+      SELECT `d`.`Id`, `d`.`CreatedAt`, `d`.`ParentCommentId`, `d`.`PostId`, `d`.`Text`, `d`.`UserId`, `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM (
+      
+                      WITH RECURSIVE CommentTree AS (
+                      SELECT * FROM comments 
+                      WHERE PostId = @p0 AND ParentCommentId IS NULL
+                      UNION ALL
+                      SELECT c.* FROM comments c 
+                      INNER JOIN CommentTree ct ON c.ParentCommentId = ct.Id
+                      WHERE c.PostId = @p1
+                      )
+                      SELECT * FROM CommentTree
+      ) AS `d`
+      INNER JOIN `users` AS `u` ON `d`.`UserId` = `u`.`UserId`
+[01:10:45 INF] [] info: 3/29/2026 01:10:45.803 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (12ms) [Parameters=[@__p_0='b2ef2e71-3711-4c0d-a06e-dc85eacf5dda' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:12:48 INF] [] Starting Web Host...
+[01:13:12 WRN] [Microsoft.EntityFrameworkCore.Model.Validation] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+[01:13:12 INF] [] info: 3/29/2026 01:13:12.921 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (51ms) [Parameters=[p0='08de7923-12ef-423d-8851-50623ed48d9a', p1='08de7923-12ef-423d-8851-50623ed48d9a'], CommandType='Text', CommandTimeout='30']
+      SELECT `d`.`Id`, `d`.`CreatedAt`, `d`.`ParentCommentId`, `d`.`PostId`, `d`.`Text`, `d`.`UserId`, `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM (
+      
+                      WITH RECURSIVE CommentTree AS (
+                      SELECT * FROM comments 
+                      WHERE PostId = @p0 AND ParentCommentId IS NULL
+                      UNION ALL
+                      SELECT c.* FROM comments c 
+                      INNER JOIN CommentTree ct ON c.ParentCommentId = ct.Id
+                      WHERE c.PostId = @p1
+                      )
+                      SELECT * FROM CommentTree
+      ) AS `d`
+      INNER JOIN `users` AS `u` ON `d`.`UserId` = `u`.`UserId`
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.047 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='b2ef2e71-3711-4c0d-a06e-dc85eacf5dda' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.063 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='9d739bff-4986-41c8-af40-46c2a7335173' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.068 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='b1c40435-06cf-4f55-8ab5-14d2246ec4e8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.073 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.088 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-115c-494f-8495-b943c35aec90' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.094 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.097 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.099 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.105 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-a009-498f-85b1-554079b0caee' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.107 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-9e3b-4995-825a-3a26468ab8c6' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.110 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-1245-4a20-8f71-790c674d9904' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.112 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='bfb03953-0a45-4d41-8396-3a4082535235' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.115 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f19a0c5a-f7bb-45ec-bf35-590d42583da0' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.117 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-ee8c-432f-8b74-a66d1028e320' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.122 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-eea9-4683-86f0-47563475bc06' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.124 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='9d739bff-4986-41c8-af40-46c2a7335173' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.127 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b1c40435-06cf-4f55-8ab5-14d2246ec4e8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.129 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.131 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-115c-494f-8495-b943c35aec90' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.133 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.139 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.142 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.144 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-a009-498f-85b1-554079b0caee' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.146 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-9e3b-4995-825a-3a26468ab8c6' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.148 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='bfb03953-0a45-4d41-8396-3a4082535235' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.157 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f19a0c5a-f7bb-45ec-bf35-590d42583da0' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.160 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-ee8c-432f-8b74-a66d1028e320' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.163 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b1c40435-06cf-4f55-8ab5-14d2246ec4e8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.170 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.173 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-115c-494f-8495-b943c35aec90' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.176 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.179 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.183 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.187 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-a009-498f-85b1-554079b0caee' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.189 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f19a0c5a-f7bb-45ec-bf35-590d42583da0' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.191 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.194 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.196 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.201 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:13:13 INF] [] info: 3/29/2026 01:13:13.204 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:13:13 WRN] [PerformanceMiddleware] API GET /api/posts/08de7923-12ef-423d-8851-50623ed48d9a/comments/tree chạy chậm: 4076ms
+[01:37:21 INF] [] Starting Web Host...
+[01:37:35 WRN] [Microsoft.EntityFrameworkCore.Model.Validation] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.031 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (44ms) [Parameters=[p0='08de7923-12ef-423d-8851-50623ed48d9a', p1='08de7923-12ef-423d-8851-50623ed48d9a'], CommandType='Text', CommandTimeout='30']
+      SELECT `d`.`Id`, `d`.`CreatedAt`, `d`.`ParentCommentId`, `d`.`PostId`, `d`.`Text`, `d`.`UserId`, `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM (
+      
+                      WITH RECURSIVE CommentTree AS (
+                      SELECT * FROM comments 
+                      WHERE PostId = @p0 AND ParentCommentId IS NULL
+                      UNION ALL
+                      SELECT c.* FROM comments c 
+                      INNER JOIN CommentTree ct ON c.ParentCommentId = ct.Id
+                      WHERE c.PostId = @p1
+                      )
+                      SELECT * FROM CommentTree
+      ) AS `d`
+      INNER JOIN `users` AS `u` ON `d`.`UserId` = `u`.`UserId`
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.158 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='b2ef2e71-3711-4c0d-a06e-dc85eacf5dda' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.179 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='9d739bff-4986-41c8-af40-46c2a7335173' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.185 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b1c40435-06cf-4f55-8ab5-14d2246ec4e8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.188 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.202 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-115c-494f-8495-b943c35aec90' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.210 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.213 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.214 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.216 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-a009-498f-85b1-554079b0caee' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.218 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-9e3b-4995-825a-3a26468ab8c6' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.220 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-1245-4a20-8f71-790c674d9904' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.222 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='bfb03953-0a45-4d41-8396-3a4082535235' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.224 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f19a0c5a-f7bb-45ec-bf35-590d42583da0' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.226 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-ee8c-432f-8b74-a66d1028e320' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.228 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-eea9-4683-86f0-47563475bc06' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.229 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='9d739bff-4986-41c8-af40-46c2a7335173' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.231 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b1c40435-06cf-4f55-8ab5-14d2246ec4e8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.233 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.236 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-115c-494f-8495-b943c35aec90' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.239 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.241 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.243 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.245 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-a009-498f-85b1-554079b0caee' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.247 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-9e3b-4995-825a-3a26468ab8c6' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.249 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='bfb03953-0a45-4d41-8396-3a4082535235' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.254 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f19a0c5a-f7bb-45ec-bf35-590d42583da0' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.262 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-ee8c-432f-8b74-a66d1028e320' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.264 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='b1c40435-06cf-4f55-8ab5-14d2246ec4e8' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.266 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.268 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-115c-494f-8495-b943c35aec90' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.271 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.274 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.276 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.277 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de793b-a009-498f-85b1-554079b0caee' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.279 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='f19a0c5a-f7bb-45ec-bf35-590d42583da0' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.282 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7b684966-7305-41fc-a905-7e8b20e0b05b' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.285 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='d1614aa9-1720-46e3-bf68-61789a2aa605' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.289 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.292 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='08de7923-11d5-42e3-8cc5-39d0f14e690d' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM `users` AS `u`
+      WHERE `u`.`UserId` = @__p_0
+      LIMIT 1
+[01:37:36 INF] [] info: 3/29/2026 01:37:36.295 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (0ms) [Parameters=[@__p_0='7195dc8f-a1e5-47aa-ab16-4822f1a7d770' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0
+[01:37:36 WRN] [PerformanceMiddleware] API GET /api/posts/08de7923-12ef-423d-8851-50623ed48d9a/comments/tree chạy chậm: 4003ms
+[01:38:20 INF] [PerformanceMiddleware] API /api/posts/08de7923-12ef-423d-8851-50623ed48d9a/comments/tree hoàn thành trong 17ms
+[01:38:25 INF] [PerformanceMiddleware] API /api/posts/08de7923-12ef-423d-8851-50623ed48d9a/comments/tree hoàn thành trong 20ms
+[01:38:26 INF] [PerformanceMiddleware] API /api/posts/08de7923-12ef-423d-8851-50623ed48d9a/comments/tree hoàn thành trong 17ms
+[17:20:13 INF] [] Starting Web Host...
+[17:21:49 INF] [] Starting Web Host...
+[17:22:04 WRN] [Microsoft.EntityFrameworkCore.Model.Validation] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+[17:22:05 INF] [] info: 3/29/2026 17:22:05.153 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (56ms) [Parameters=[p0='08de7923-12ef-423f-8427-8bfd7f58841e', p1='08de7923-12ef-423f-8427-8bfd7f58841e'], CommandType='Text', CommandTimeout='30']
+      SELECT `d`.`Id`, `d`.`CreatedAt`, `d`.`ParentCommentId`, `d`.`PostId`, `d`.`Text`, `d`.`UserId`, `u`.`UserId`, `u`.`Email`, `u`.`FName`, `u`.`LName`, `u`.`Password`, `u`.`PhoneNumber`
+      FROM (
+      
+                      WITH RECURSIVE CommentTree AS (
+                      SELECT * FROM comments 
+                      WHERE PostId = @p0 AND ParentCommentId IS NULL
+                      UNION ALL
+                      SELECT c.* FROM comments c 
+                      INNER JOIN CommentTree ct ON c.ParentCommentId = ct.Id
+                      WHERE c.PostId = @p1
+                      )
+                      SELECT * FROM CommentTree
+      ) AS `d`
+      INNER JOIN `users` AS `u` ON `d`.`UserId` = `u`.`UserId`
+[17:22:05 INF] [] info: 3/29/2026 17:22:05.323 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (1ms) [Parameters=[@__p_0='ae2ebd4e-ef9c-4279-896c-d58e99f94de1' (Nullable = true)], CommandType='Text', CommandTimeout='30']
+      SELECT `c`.`Id`, `c`.`CreatedAt`, `c`.`ParentCommentId`, `c`.`PostId`, `c`.`Text`, `c`.`UserId`
+      FROM `comments` AS `c`
+      WHERE `c`.`ParentCommentId` = @__p_0

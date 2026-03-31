@@ -1,7 +1,8 @@
-using System.Text;
 using DemoWebAPI.Infrastructure.Configurations; // Namespace mới từ Infrastructure
 using DemoWebAPI.WebAPI.Extensions;             // Namespace cho Middleware
+using DemoWebAPI.WebAPI.Middlewares;
 using Serilog;
+using System.Text;
 
 namespace DemoWebAPI;
 
@@ -18,10 +19,11 @@ public class Program
         builder.Host.UseSerilog();
 
         // 2. Đăng ký các dịch vụ từ Infrastructure 
+        builder.Services.AddInfrastructure(builder.Configuration);
         builder.Services.AddDatabaseConfiguration();
         builder.Services.AddCacheConfiguration(builder.Configuration);
         builder.Services.AddRepositoriesAndServices();
-
+        
         // 3. Đăng ký các dịch vụ thuộc tầng Presentation (WebAPI)
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
@@ -40,7 +42,12 @@ public class Program
         // Benchmark: Thêm một Middleware tự chế để đo Response Time ở đây
         app.UseMiddleware<PerformanceMiddleware>();
 
-        app.UseAuthorization();
+        // THỨ TỰ RẤT QUAN TRỌNG
+        app.UseMiddleware<ExceptionMiddleware>(); // Bắt lỗi đầu tiên
+
+        app.UseAuthentication(); // "Bạn là ai?"
+        app.UseAuthorization();  // "Bạn có được phép vào không?"
+
         app.MapControllers();
 
         try

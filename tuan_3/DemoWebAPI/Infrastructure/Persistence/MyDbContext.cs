@@ -24,6 +24,15 @@ namespace DemoWebAPI.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Cấu hình những trường quản trọng của bảng User để đảm match với các trường trong CSDL
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(u => u.Id).HasColumnName("UserId");
+                // Chỉ cấu hình những thứ Convention có thể nhầm hoặc cần độ chính xác cao
+                entity.Property(u => u.Role).HasColumnName("Role").HasConversion<int>();
+                entity.Property(u => u.RefreshTokenExpiryTime).HasColumnType("datetime(6)");
+            });
+
             // Self-reference Comment
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.ParentComment)

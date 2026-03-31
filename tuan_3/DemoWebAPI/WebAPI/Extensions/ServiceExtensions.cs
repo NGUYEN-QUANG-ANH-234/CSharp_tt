@@ -3,6 +3,7 @@ using DemoWebAPI.Application.Mappings;
 using DemoWebAPI.Application.Services;
 using DemoWebAPI.Core.Interfaces;
 using DemoWebAPI.Infrastructure.Data;
+using DemoWebAPI.Infrastructure.ExternalServices;
 using DemoWebAPI.Infrastructure.Persistence.Implementations;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,6 +49,19 @@ public static class ServiceExtensions
 
         services.AddSingleton<IAppCache, RedisAppCache>();
         services.AddScoped<ICommentService, CommentService>();
+
+        // Đăng ký JwtService
+        services.AddScoped<IJwtService, JwtService>();
+        services.AddJwtAuthentication(configuration);
+
+        services.AddAuthorization(options =>
+        {
+            // Bạn có thể định nghĩa các Policy (Chính sách) nếu muốn chuyên nghiệp hơn
+            options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+            options.AddPolicy("UserOnly", policy => policy.RequireRole("User", "Admin"));
+        });
+
+        services.AddControllers();
 
         services
             .AddAutoMapper(typeof(CommentProfile).Assembly)

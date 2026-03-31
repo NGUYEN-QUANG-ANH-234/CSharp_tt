@@ -4,6 +4,7 @@ using DemoWebAPI.Application.Interfaces;
 using DemoWebAPI.Application.Services;
 using DemoWebAPI.Core.Entities;
 using DemoWebAPI.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualBasic;
 
@@ -11,6 +12,7 @@ namespace DemoWebAPI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    //[Authorize(Roles = "Admin")] // Toàn bộ các hàm trong Controller này chỉ Admin mới vào được
     public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
@@ -19,9 +21,9 @@ namespace DemoWebAPI.WebAPI.Controllers
             _commentService = commentService;
         }
 
-
         // 1. Create
         [HttpPost("/api/posts/{postId}/comments")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> CreateComment(Guid postId, [FromBody] CreateCommentDto createDto)
         {
             if (createDto == null) return BadRequest();
@@ -34,7 +36,7 @@ namespace DemoWebAPI.WebAPI.Controllers
 
 
         // 2. Read
-
+        [Authorize(Roles = "User,Admin")]
         [HttpGet("/api/posts/{postId}/comments/tree")]
         public async Task<IActionResult> GetCommentsTree(Guid postId)
         {
@@ -50,11 +52,11 @@ namespace DemoWebAPI.WebAPI.Controllers
             return Ok(result);
         }
 
-        // Demo vong lap khi khong dung Mapper
+        
         [HttpGet("/api/posts/{postId}/comments/tree_loop")]
         public async Task<IActionResult> GetCommentsTreeLoop(Guid postId)
         {
-            var result = await _commentService.GetCommentTreeLoopAsync(postId);            
+            var result = await _commentService.GetCommentTreeLoopAsync(postId);
             return Ok(result);
         }
 
