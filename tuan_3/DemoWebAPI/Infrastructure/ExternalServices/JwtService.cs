@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using DemoWebAPI.Application.Interfaces;
 using DemoWebAPI.Core.Entities;
+using DotNetEnv;
 
 namespace DemoWebAPI.Infrastructure.ExternalServices
 {
@@ -21,7 +22,7 @@ namespace DemoWebAPI.Infrastructure.ExternalServices
         public string GenerateAccessToken(User user)
         {
             var jwtSettings = _config.GetSection("JwtSettings");
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET_KEY")!));
 
             // Claims là "chứng minh thư" của User được nhúng vào Token
             var claims = new List<Claim>
@@ -35,7 +36,7 @@ namespace DemoWebAPI.Infrastructure.ExternalServices
                 issuer: jwtSettings["Issuer"],
                 audience: jwtSettings["Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(double.Parse(jwtSettings["ExpiryInMinutes"]!)),
+                expires: DateTime.Now.AddMinutes(double.Parse(Environment.GetEnvironmentVariable("ExpiryInMinutes")!)),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
 
@@ -59,7 +60,7 @@ namespace DemoWebAPI.Infrastructure.ExternalServices
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET_KEY")!)),
                 ValidateLifetime = false // Quan trọng: Phải tắt check hết hạn để đọc được Claim từ Token cũ
             };
 

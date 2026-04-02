@@ -1,4 +1,4 @@
-﻿using DemoWebAPI.Core.Interfaces;
+﻿using DemoWebAPI.Application.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 

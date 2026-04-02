@@ -17,12 +17,14 @@ namespace DemoWebAPI.Application.Services
         private readonly ICommentRepo _commentRepo;
         private readonly IAppCache _cache;
         private readonly IMapper _mapper;
+        private readonly ILockService _lockService;
 
-        public CommentService(ICommentRepo commentRepo, IAppCache cache, IMapper mapper)
+        public CommentService(ICommentRepo commentRepo, IAppCache cache, IMapper mapper, ILockService lockService)
         {
             _commentRepo = commentRepo;
             _cache = cache;
             _mapper = mapper;
+            _lockService = lockService;
         }
 
         public async Task<CommentBasicVM> CreateCommentAsync(Guid postId, CreateCommentDto createDto)
@@ -76,20 +78,26 @@ namespace DemoWebAPI.Application.Services
             string cacheKey = $"comment_flat_{postId}";
             var cacheData = await _cache.GetAsync<List<CommentFlatVM>>(cacheKey);
 
-            // Kiem tra cache
+            //// Kiem tra cache
             if (cacheData is not null) return cacheData;
 
-            // Thuc hien lay comment
-            var comments = await _commentRepo.GetAllCommentsCTE(postId);
-            if (comments is null) return new List<CommentFlatVM>();
+            return await _lockService.GetWithLockAsync(cacheKey, async () =>
+            {
+                // Check lần 2 đề các client đến sau lấy trực tiếp từ cache đã cập nhật
+                var data = await _cache.GetAsync<List<CommentFlatVM>>(cacheKey);
+                if (data is not null) return data;
 
-            // Mapping du lieu dau ra
-            var flatList = _mapper.Map<List<CommentFlatVM>>(comments).ToList();
+                // Thuc hien lay comment
+                var comments = await _commentRepo.GetAllCommentsCTE(postId);
+                if (comments is null) return new List<CommentFlatVM>();
 
+                // Mapping du lieu dau ra
+                var flatList = _mapper.Map<List<CommentFlatVM>>(comments).ToList();
 
-            // Luu cache
-            await _cache.SetAsync(cacheKey, flatList, TimeSpan.FromMinutes(15));
-            return flatList;
+                // Luu cache
+                await _cache.SetAsync(cacheKey, flatList, TimeSpan.FromMinutes(15));
+                return flatList;
+            });
         }
 
         public async Task<List<CommentBasicVM>> GetCommentsByPostAsync(Guid postId, Guid authorId, ReadCommentDto readDto)

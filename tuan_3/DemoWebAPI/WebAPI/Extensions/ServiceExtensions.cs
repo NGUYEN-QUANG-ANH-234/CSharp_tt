@@ -6,6 +6,7 @@ using DemoWebAPI.Infrastructure.Data;
 using DemoWebAPI.Infrastructure.ExternalServices;
 using DemoWebAPI.Infrastructure.Persistence.Implementations;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace DemoWebAPI.WebAPI.Extensions;
 
@@ -19,7 +20,7 @@ public static class ServiceExtensions
         services.AddSwaggerGen(); // Tạo bộ phát sinh tài liệu Swagger
         services.AddOpenApi();
 
-        services.AddStackExchangeRedisCache(options => 
+        services.AddStackExchangeRedisCache(options =>
         {
             options.Configuration = configuration.GetConnectionString("Redis"); // Địa chỉ Redis server
             options.InstanceName = "DemoWebAPI_"; // Tiền tố (prefix) cho các Key để tránh đụng độ
@@ -30,15 +31,22 @@ public static class ServiceExtensions
 
         // Đăng ký Database & Repositories
         DotNetEnv.Env.Load();
-        var connString = 
-            $"Data Source={Environment.GetEnvironmentVariable("DB_SERVER")}, {Environment.GetEnvironmentVariable("DB_PORT")}; " +
-            $"Initial Catalog={Environment.GetEnvironmentVariable("DB_SERVER_NAME")}; " +
-            $"User ID={Environment.GetEnvironmentVariable("DB_USER")}; " +
-            $"Password={Environment.GetEnvironmentVariable("DB_PWD")}";
+        var connString = $"Server={Environment.GetEnvironmentVariable("DB_SERVER")};" +
+                 $"Port={Environment.GetEnvironmentVariable("DB_PORT")};" +
+                 $"Database={Environment.GetEnvironmentVariable("DB_SERVER_NAME")};" +
+                 $"Uid={Environment.GetEnvironmentVariable("DB_USER")};" +
+                 $"Pwd={Environment.GetEnvironmentVariable("DB_PWD")};" +
+                 "SslMode=None;AllowPublicKeyRetrieval=True;Max Pool Size=1000;";
 
         // Đăng ký DB chuẩn Web API
         services.AddDbContext<MyDbContext>(options =>
-            options.UseMySql(connString, ServerVersion.AutoDetect(connString))
+            options.UseMySql(connString, ServerVersion.AutoDetect(connString)
+            , mySqlOptions =>
+            {
+                mySqlOptions.EnableRetryOnFailure(); // Rất quan trọng khi chạy Stress Test
+            }
+            )
+                   .LogTo(message => Log.Information(message), new[] { DbLoggerCategory.Database.Command.Name }, LogLevel.Information)
                    .UseLoggerFactory(MyDbContext.MyLoggerFactory) // Gắn log từ class Context
                    .EnableDetailedErrors()
                    .UseLazyLoadingProxies());
@@ -68,6 +76,9 @@ public static class ServiceExtensions
             .AddAutoMapper(typeof(PostProfile).Assembly);
 
         Type type = typeof(CommentProfile);
+
+        // Đăng ký dịch vụ lock
+        services.AddSingleton<ILockService, LockService>();
 
         // lấy assembly chứa class
         var assembly = type.Assembly;

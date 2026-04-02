@@ -53,12 +53,12 @@ namespace DemoWebAPI.WebAPI.Controllers
         }
 
         
-        [HttpGet("/api/posts/{postId}/comments/tree_loop")]
-        public async Task<IActionResult> GetCommentsTreeLoop(Guid postId)
-        {
-            var result = await _commentService.GetCommentTreeLoopAsync(postId);
-            return Ok(result);
-        }
+        //[HttpGet("/api/posts/{postId}/comments/tree_loop")]
+        //public async Task<IActionResult> GetCommentsTreeLoop(Guid postId)
+        //{
+        //    var result = await _commentService.GetCommentTreeLoopAsync(postId);
+        //    return Ok(result);
+        //}
 
 
         [HttpGet("/api/posts/{postId}/user/{authorId}/comments")]

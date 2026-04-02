@@ -20,8 +20,6 @@ public class Program
 
         // 2. Đăng ký các dịch vụ từ Infrastructure 
         builder.Services.AddInfrastructure(builder.Configuration);
-        builder.Services.AddDatabaseConfiguration();
-        builder.Services.AddCacheConfiguration(builder.Configuration);
         builder.Services.AddRepositoriesAndServices();
         
         // 3. Đăng ký các dịch vụ thuộc tầng Presentation (WebAPI)
