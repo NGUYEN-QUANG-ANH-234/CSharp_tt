@@ -1,6 +1,7 @@
 ﻿# Chặn các thư mục rác khi biên dịch
 bin/
 obj/
+Logs/
 
 # Chặn file biến môi trường 
 .env
@@ -12,3 +13,4 @@ obj/
 
 # Chặn các gói thư viện tải về
 package/
+

@@ -20,28 +20,22 @@ public class Program
 
         // 2. Đăng ký các dịch vụ từ Infrastructure 
         builder.Services.AddInfrastructure(builder.Configuration);
-        builder.Services.AddRepositoriesAndServices();
-        
-        // 3. Đăng ký các dịch vụ thuộc tầng Presentation (WebAPI)
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        // Đăng ký AutoMapper từ Assembly của Application
-        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         var app = builder.Build();
 
-        // 4. Cấu hình Middleware (Pipeline)
-        // Lưu ý: Luôn để DevTools lên đầu để Swagger bắt được các request
-        app.UseDevTools();
+        app.UseMiddleware<ExceptionMiddleware>(); // Bắt lỗi đầu tiên
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.UseDevTools();
+        }
 
         app.UseHttpsRedirection();
 
         // Benchmark: Thêm một Middleware tự chế để đo Response Time ở đây
-        app.UseMiddleware<PerformanceMiddleware>();
-
-        // THỨ TỰ RẤT QUAN TRỌNG
-        app.UseMiddleware<ExceptionMiddleware>(); // Bắt lỗi đầu tiên
+        app.UseMiddleware<PerformanceMiddleware>();        
 
         app.UseAuthentication(); // "Bạn là ai?"
         app.UseAuthorization();  // "Bạn có được phép vào không?"
