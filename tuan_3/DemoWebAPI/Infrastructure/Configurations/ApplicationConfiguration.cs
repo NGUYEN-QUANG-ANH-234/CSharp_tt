@@ -9,6 +9,7 @@ public static class ApplicationConfiguration
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<IPostService, PostService>();
 
         services.AddAutoMapper(typeof(CommentProfile).Assembly, typeof(PostProfile).Assembly);
 

@@ -8,6 +8,6 @@ namespace DemoWebAPI.Core.Interfaces
 {
 	public interface IPostRepo : IRepository<Post>
 	{
-        Task<List<Post>> GetPostsByAuthorId(Guid authorId, int page, int pageSize, string? sortBy, string? title, bool? isDescending);
+        Task<List<Post>> GetPostsByAuthorId(Guid authorId, int page, int pageSize, string? sortBy, string? searchTitle, bool? isDescending);
     }
 }

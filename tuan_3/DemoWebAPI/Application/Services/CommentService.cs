@@ -27,20 +27,25 @@ namespace DemoWebAPI.Application.Services
             _lockService = lockService;
         }
 
-        public async Task<CommentBasicVM> CreateCommentAsync(Guid postId, CreateCommentDto createDto)
+        public async Task<CommentBasicVM> CreateCommentAsync(CreateCommentDto createCommentDto)
         {
+            if (createCommentDto == null || createCommentDto.UserId == Guid.Empty)
+            {
+                return new CommentBasicVM();
+            }
+
             // Mapping du lieu dau vao
-            var commentEntity = _mapper.Map<Comment>(createDto);
-            commentEntity.PostId = postId;
+            var commentEntity = _mapper.Map<Comment>(createCommentDto);
+            
 
             // Insert du lieu vao bang du lieu
             await _commentRepo.InsertAsync(commentEntity);
 
             // Xoa cache
-            await _cache.RemoveAsync($"comment_tree_{postId}");
+            await _cache.RemoveAsync($"comment_by_post_{commentEntity.PostId}");
 
             // Mapping du lieu tra ve
-            return _mapper.Map<CommentBasicVM>(commentEntity);
+            return _mapper.Map<CommentBasicVM>(commentEntity);            
         }
 
         // 2.Read
@@ -89,18 +94,26 @@ namespace DemoWebAPI.Application.Services
 
                 // Thuc hien lay comment
                 var comments = await _commentRepo.GetAllCommentsCTE(postId);
-                if (comments is null) return new List<CommentFlatVM>();
+
+                // Kiếm tra nếu comments null hoặc không có phần tử nào 
+                if (comments == null || !comments.Any())
+                {
+                    // Khởi tạo mảng rỗng (tránh miss cache liên tục)
+                    var emptyList = new List<CommentFlatVM>();
+                    await _cache.SetAsync(cacheKey, emptyList, TimeSpan.FromMinutes(1)); // Cache rỗng ngắn
+                    return emptyList;
+                }
 
                 // Mapping du lieu dau ra
                 var flatList = _mapper.Map<List<CommentFlatVM>>(comments).ToList();
 
-                // Luu cache
-                await _cache.SetAsync(cacheKey, flatList, TimeSpan.FromMinutes(15));
-                return flatList;
+                    // Luu cache
+                    await _cache.SetAsync(cacheKey, flatList, TimeSpan.FromMinutes(15));
+                    return flatList;
             });
         }
 
-        public async Task<List<CommentBasicVM>> GetCommentsByPostAsync(Guid postId, Guid authorId, ReadCommentDto readDto)
+        public async Task<List<CommentBasicVM>> GetCommentsByPostAsync(Guid postId, Guid authorId, QueryCommentDto queryCommentDto)
         {
             string cacheKey = $"comments_post_{postId}_author_{authorId}";
             var cacheData = await _cache.GetAsync<List<CommentBasicVM>>(cacheKey);
@@ -109,7 +122,7 @@ namespace DemoWebAPI.Application.Services
             if (cacheData is not null) return cacheData;
 
             // Thuc hien tim du lieu
-            var comments = _commentRepo.GetAllCommentsByUserInPost(postId, authorId, readDto.Page, readDto.PageSize, readDto?.SortBy, readDto?.Text, readDto?.IsDescending);
+            var comments = _commentRepo.GetAllCommentsByUserInPost(postId, authorId, queryCommentDto.Page, queryCommentDto.PageSize, queryCommentDto?.SortBy, queryCommentDto?.SearchText, queryCommentDto?.IsDescending);
 
             if (comments is null) return new List<CommentBasicVM>();
 
@@ -122,12 +135,12 @@ namespace DemoWebAPI.Application.Services
         }
 
         // 3.Update
-        public async Task<bool> UpdateCommentAsync(Guid id, UpdateCommentDto updateDto)
+        public async Task<bool> UpdateCommentAsync(Guid id, UpdateCommentDto updateCommentDto)
         {
             var existingComment = await _commentRepo.GetByIdAsync(id);
             if (existingComment is null) return false;
 
-            _mapper.Map(updateDto, existingComment);
+            _mapper.Map(updateCommentDto, existingComment);
             await _commentRepo.UpdateAsync(existingComment);
 
             await _cache.RemoveAsync($"comment_tree_{existingComment.Id}");
@@ -148,7 +161,7 @@ namespace DemoWebAPI.Application.Services
 
         public async Task<List<Comment>> GetCommentTreeLoopAsync(Guid postId)
         {
-            string cacheKey = $"comments_tree_loop_{postId}";
+            string cacheKey = $"comment_tree_loop_{postId}";
             var cacheData = await _cache.GetAsync<List<Comment>>(cacheKey);
 
             if (cacheData is not null) return cacheData;

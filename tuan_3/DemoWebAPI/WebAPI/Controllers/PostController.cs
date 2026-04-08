@@ -1,82 +1,71 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using DemoWebAPI.Application.DTOs;
+using DemoWebAPI.Application.Interfaces;
 using DemoWebAPI.Core.Entities;
 using DemoWebAPI.Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 
 namespace DemoWebAPI.WebAPI.Controllers {
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}")]
     [ApiController]
-    [Route("api/[controller]")]
     public class PostController : ControllerBase
     {
-        private readonly IPostRepo _postRepo;
+        private readonly IPostService _postService;
 
-        private readonly IMapper _mapper;
-
-        public PostController(IPostRepo postRepo, IMapper mapper)
+        public PostController(IPostService postService)
         {
-            _postRepo = postRepo;
-            _mapper = mapper;
+            _postService = postService;
         }        
 
         // 1. Create
-        [HttpPost("/api/posts")]
-        public async Task<IActionResult> CreatePost([FromBody] CreatePostDto createDto)
+        [HttpPost("posts/")]
+        public async Task<IActionResult> CreatePost([FromBody] CreatePostDto createPostDto)
         {
-            if (createDto == null) return BadRequest();
+            var createdPost = await _postService.CreatePostAsync(createPostDto);
 
-            var commentEntity = _mapper.Map<Post>(createDto);
-
-            await _postRepo.InsertAsync(commentEntity);
-
-            return CreatedAtAction(nameof(GetPost), new {id = commentEntity.Id}, commentEntity);
+            return CreatedAtAction( nameof(GetPostById), new { postId = createdPost.Id }, createdPost );
         }
 
         // 2. Read
-        [HttpGet("/api/posts/{id}")]
-        public async Task<IActionResult> GetPost(Guid id)
+        [HttpGet("posts/{postId}")]
+        public async Task<IActionResult> GetPostById(Guid postId)
         {
-            var post = await _postRepo.GetByIdAsync(id);
-            if (post == null) return BadRequest();
+            var post = await _postService.GetPostByIdAsync(postId);
+            if (post == null) return NotFound();
 
-            var result = _mapper.Map<PostBasicVM>(post);
-
-            return Ok(result);
+            return Ok(post);
         }
 
-        [HttpGet("/api/user/{authorId}/posts")]
-        public async Task<IActionResult> GetPosts(Guid authorId, [FromQuery] ReadPostDto postDto)
+        [HttpGet("users/{userId}/posts")]
+        public async Task<IActionResult> GetPostsByUserId(Guid userId, [FromQuery] QueryPostDto queryPostDto)
         {
-            var posts = await _postRepo.GetPostsByAuthorId(authorId, postDto.Page, postDto.PageSize, postDto.SortBy, postDto.Title, postDto.IsDescending);
-            // int page, int pageSize, string? sortBy, string? title, bool? isDescending)
+            var posts = await _postService.GetPostsByUserIdAsync(userId, queryPostDto);
+           
             if (posts == null) return NotFound();
 
-            var result = _mapper.Map<List<PostBasicVM>>(posts);
-
-            return Ok(result);
+            return Ok(posts);
         }
 
         // 3. Update
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePost(Guid id, [FromBody] UpdateCommentDto updateDto)
+        [HttpPut("posts/{postId}")]
+        public async Task<IActionResult> UpdatePost(Guid postId, [FromBody] UpdatePostDto updatePostDto)
         {
-            var existingPost = await _postRepo.GetByIdAsync(id);
-            if(existingPost == null) return BadRequest();
+            var isUpdated = await _postService.UpdatePostAsync(postId, updatePostDto);
+            if (isUpdated == false) return NotFound();
 
-            _mapper.Map(updateDto, existingPost);
-            await _postRepo.UpdateAsync(existingPost);
             
             return NoContent();
         }
 
         // 4. Update
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePost(Guid id)
+        [HttpDelete("posts/{postId}")]
+        public async Task<IActionResult> DeletePost(Guid postId)
         {
-            var existingPost = await _postRepo.GetByIdAsync(id);
-            if (existingPost == null) return BadRequest();
-
-            await _postRepo.DeleteAsync(existingPost.Id);
+            var isDeleted = await _postService.DeletePostAsync(postId);
+            if (isDeleted == false) return NotFound();
 
             return NoContent();
         }

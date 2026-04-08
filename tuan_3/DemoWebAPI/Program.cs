@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using DemoWebAPI.Infrastructure.Configurations; // Namespace mới từ Infrastructure
 using DemoWebAPI.WebAPI.Extensions;             // Namespace cho Middleware
 using DemoWebAPI.WebAPI.Middlewares;
@@ -18,12 +19,25 @@ public class Program
         LoggingConfiguration.SetupInfrastructureLogging(builder.Configuration);
         builder.Host.UseSerilog();
 
+        builder.Services.AddApiVersioning(options =>
+        {
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.ReportApiVersions = true;
+            options.ApiVersionReader = new UrlSegmentApiVersionReader(); // Dùng /v1/ trong URL
+        }).AddApiExplorer(options =>
+        {
+            options.GroupNameFormat = "'v'VVV";
+            options.SubstituteApiVersionInUrl = true;
+        });
+
         // 2. Đăng ký các dịch vụ từ Infrastructure 
         builder.Services.AddInfrastructure(builder.Configuration);
 
         var app = builder.Build();
 
-        app.UseMiddleware<ExceptionMiddleware>(); // Bắt lỗi đầu tiên
+        app.UseMiddleware<ExceptionMiddleware>();    // Bắt lỗi toàn cục
+        app.UseMiddleware<CorrelationIdMiddleware>(); // Gán ID ngay từ đầu
 
         if (app.Environment.IsDevelopment())
         {

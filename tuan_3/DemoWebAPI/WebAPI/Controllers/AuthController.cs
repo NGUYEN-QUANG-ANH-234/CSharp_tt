@@ -1,4 +1,5 @@
-﻿using DemoWebAPI.Application.DTOs;
+﻿using Asp.Versioning;
+using DemoWebAPI.Application.DTOs;
 using DemoWebAPI.Application.Interfaces;
 using DemoWebAPI.Infrastructure.Data; // Giả sử đây là DbContext của bạn
 using Microsoft.AspNetCore.Mvc;
@@ -6,8 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DemoWebAPI.WebAPI.Controllers
 {
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
         private readonly IJwtService _jwtService;

@@ -15,12 +15,12 @@
         public string? Image { get; set; }
     }
 
-    public class ReadPostDto 
+    public class QueryPostDto 
     {  
         public int Page { get; set; }
         public int PageSize { get; set; }
         public string? SortBy { get; set; }
-        public string? Title { get; set; }
+        public string? SearchTitle { get; set; }
         public bool? IsDescending { get; set; }
     }
 
